@@ -1,4 +1,5 @@
 const IssueReportModel = require("../models/issueReportModel");
+const IssueLogModel = require("../models/issueLogModel");
 
 const IssueReportController = {
   //  GET: ดึงข้อมูลเฉพาะของ User ที่ล็อกอิน
@@ -37,6 +38,10 @@ const IssueReportController = {
 
       // อัปเดต `transaction_id`
       await IssueReportModel.updateTransactionId(issue.id, transaction_id);
+
+      // บันทึก Log "Created"
+      const timestamp = new Date().toISOString();
+      await IssueLogModel.createIssueLog(reporter_id, issue.id, "Created", "Pending", timestamp);
 
       res.status(201).json({
         message: "Issue reported successfully",

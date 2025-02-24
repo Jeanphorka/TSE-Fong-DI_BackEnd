@@ -18,9 +18,16 @@ app.use("/api/issue-reports", issueReportRoutes);
 app.use('/api/auth', authRoutes);
 
 
+const cors = require("cors");
+
+app.use(cors({
+  origin: "http://localhost:3000",  
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
 
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
     console.log(`🌐 Server running on port ${PORT}`);
     console.log(`📑 Swagger Docs: http://localhost:${PORT}/api-docs`);

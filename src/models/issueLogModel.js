@@ -1,7 +1,7 @@
 const db = require("../../config/db");
 
 const IssueLogModel = {
-  // ✅ บันทึก Log `"Created"`, `"ดำเนินการ"`, `"เสร็จสิ้น"`
+  // บันทึก Log `"Created"`, `"ดำเนินการ"`, `"เสร็จสิ้น"`
   createIssueLog: async (user_id, issue_id, action, status, timestamp, has_images = false, onGoingAt = null, endAt = null) => {
     try {
       const query = `

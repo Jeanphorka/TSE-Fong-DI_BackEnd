@@ -73,7 +73,6 @@ const IssueReportModel = {
                 ) ORDER BY il.ongoingat ASC
             ), '[]') AS status_updates
 
-        
         FROM issues ir
         LEFT JOIN issue_categories ic ON ir.problem_id = ic.id
         LEFT JOIN users u ON ir.reporter_id = u.id

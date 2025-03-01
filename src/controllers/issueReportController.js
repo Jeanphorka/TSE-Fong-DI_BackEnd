@@ -13,8 +13,7 @@ const IssueReportController = {
         if (!reporter_id || !problem_id || !location_id) {
           return res.status(400).json({ error: "Missing required parameters" });
         }
-         // ✅ Debug: ตรวจสอบ req.files
-         console.log("req.files:", req.files);
+        
         // รับ URL ของไฟล์ที่อัปโหลด
         const imageUrls = req.files?.length > 0
                 ? req.files.map(file => ({
@@ -22,8 +21,6 @@ const IssueReportController = {
                     file_extension: file.originalname.split(".").pop()
                 }))
                 : [];
-
-                console.log("imageUrls:", imageUrls);
 
         // บันทึกข้อมูลปัญหา
         const issue = await IssueReportModel.createIssueReport(reporter_id, problem_id, description || "", location_id);

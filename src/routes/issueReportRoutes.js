@@ -33,26 +33,23 @@ const authMiddleware = require("../middlewares/authMiddleware");
  *                 type: object
  *                 properties:
  *                   id:
- *                     type: integer
- *                     example: 1
+ *                     type: string
+ *                     example: "1"
  *                   transaction_id:
  *                     type: string
- *                     example: "IS-23022025-0001"
- *                   reporter_id:
- *                     type: integer
- *                     example: 5
+ *                     example: "IS-01032025-0001"
+ *                   username:
+ *                     type: string
+ *                     example: "6510742000"
  *                   description:
  *                     type: string
- *                     example: "ไฟดับทั้งตึก"
- *                   problem_name:
+ *                     example: "สบู่หมดจ้า"
+ *                   title:
  *                     type: string
- *                     example: "ไฟฟ้าดับ"
+ *                     example: "อุปกรณ์หมด (ทิชชู, สบู่ ฯลฯ)"
  *                   status:
  *                     type: string
- *                     example: "Pending"
- *                   location_id:
- *                     type: integer
- *                     example: 1
+ *                     example: "รอรับเรื่อง"
  *                   building:
  *                     type: string
  *                     example: "ตึกอำนวยการ"
@@ -65,34 +62,40 @@ const authMiddleware = require("../middlewares/authMiddleware");
  *                   created_at:
  *                     type: string
  *                     format: date-time
- *                     example: "2025-02-23T12:34:56.789Z"
+ *                     example: "2025-03-01T09:35:15.181Z"
  *                   updated_at:
  *                     type: string
  *                     format: date-time
- *                     example: "2025-02-23T12:34:56.789Z"
+ *                     example: "2025-03-01T09:35:15.181Z"
+ *                   images:
+ *                     type: array
+ *                     description: "รวมรูปภาพทั้งหมดที่เกี่ยวข้องกับปัญหานี้"
+ *                     items:
+ *                       type: string
+ *                       example: "https://s3.amazonaws.com/uploads/image1.jpg"
+ *                   status_updates:
+ *                     type: array
+ *                     description: "รายละเอียดของแต่ละสถานะที่เปลี่ยนไป"
+ *                     items:
+ *                       type: object
+ *                       properties:
+ *                         status:
+ *                           type: string
+ *                           example: "กำลังดำเนินการ"
+ *                         updated_at:
+ *                           type: string
+ *                           format: date-time
+ *                           example: "2025-03-02T18:00:00+07:00"
+ *                         images:
+ *                           type: array
+ *                           description: "รูปภาพที่ถูกอัปโหลดในสถานะนี้ (ถ้ามี)"
+ *                           items:
+ *                             type: string
+ *                             example: "https://s3.amazonaws.com/uploads/image2.jpg"
  *       401:
  *         description: Unauthorized (ต้องมี Token)
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: "Unauthorized"
- *                 message:
- *                   type: string
- *                   example: "You must log in before accessing issue reports."
  *       500:
  *         description: Internal Server Error
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: "Internal Server Error"
  */
 router.get("/", authMiddleware, IssueReportController.getUserIssues);
 

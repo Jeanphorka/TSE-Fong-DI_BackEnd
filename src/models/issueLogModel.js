@@ -1,19 +1,23 @@
 const db = require("../../config/db");
 
 const IssueLogModel = {
-  // บันทึก Log `"Created"`
-  createIssueLog: (user_id, issue_id, action, status, timestamp) => {
-    return new Promise((resolve, reject) => {
+  // บันทึก Log `"Created"`, `"ดำเนินการ"`, `"เสร็จสิ้น"`
+  createIssueLog: async (user_id, issue_id, action, status, timestamp, has_images = false, onGoingAt = null, endAt = null) => {
+    try {
       const query = `
-        INSERT INTO issue_log (user_id, issue_id, action, status, timestamp)
-        VALUES ($1, $2, $3, $4, $5) RETURNING *;
+        INSERT INTO issue_log (user_id, issue_id, action, status, timestamp, has_images, onGoingAt, endAt)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *;
       `;
-      db.query(query, [user_id, issue_id, action, status, timestamp], (err, result) => {
-        if (err) reject(err);
-        else resolve(result);
-      });
-    });
+      const values = [user_id, issue_id, action, status, timestamp, has_images, onGoingAt, endAt];
+
+      const result = await db.query(query, values);
+      return result.rows[0];
+    } catch (err) {
+      throw err;
+    }
   },
+
+
 };
 
 module.exports = IssueLogModel;

@@ -1,4 +1,4 @@
-const upload = require("../middlewares/uploadMiddleware");
+const { upload, deleteFileFromS3 } = require("../middlewares/uploadMiddleware");
 const IssueReportModel = require("../models/issueReportModel");
 const IssueLogModel = require("../models/issueLogModel");
 
@@ -34,8 +34,7 @@ const IssueReportController = {
         await IssueReportModel.updateTransactionId(issue.id, transaction_id);
 
         // บันทึก Log "Created"
-        const timestamp = new Date().toISOString();
-        const logEntry = await IssueLogModel.createIssueLog(reporter_id, issue.id, "Created", "รอรับเรื่อง", timestamp, imageUrls.length > 0);
+        const logEntry = await IssueLogModel.createIssueLog(reporter_id, issue.id, "created", "รอรับเรื่อง",null, null,imageUrls.length > 0, null, null);
 
         // บันทึกไฟล์ภาพที่อัปโหลด
         let uploadedImages = [];

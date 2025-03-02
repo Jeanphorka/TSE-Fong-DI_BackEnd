@@ -1,4 +1,4 @@
-const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
+const { S3Client, DeleteObjectCommand } = require("@aws-sdk/client-s3");
 const multer = require("multer");
 const multerS3 = require("multer-s3");
 const path = require("path");
@@ -41,4 +41,28 @@ const upload = multer({
   fileFilter: fileFilter,
 });
 
-module.exports = upload;
+// ฟังก์ชันลบไฟล์จาก S3
+const deleteFileFromS3 = async (fileUrl) => {
+  try {
+    if (!fileUrl) {
+      console.error("⚠️ No file URL provided for deletion");
+      return;
+    }
+
+    // ดึง `Key` จาก URL เช่น `uploads/filename.png`
+    const key = fileUrl.split("/").slice(-2).join("/"); // ดึง path ย่อย เช่น `uploads/xxxx.png`
+    console.log(`🗑️ Deleting file from S3: ${key}`);
+
+    const command = new DeleteObjectCommand({
+      Bucket: process.env.AWS_S3_BUCKET_NAME,
+      Key: key
+    });
+
+    await s3.send(command);
+    console.log(`✅ File deleted from S3: ${key}`);
+  } catch (error) {
+    console.error("❌ Error deleting file from S3:", error);
+  }
+};
+
+module.exports = { upload , deleteFileFromS3 };

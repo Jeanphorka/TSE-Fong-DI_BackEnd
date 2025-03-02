@@ -60,17 +60,29 @@ const IssueReportModel = {
             COALESCE(jsonb_agg(
                 jsonb_build_object(
                     'status', il.status,
+                    'description', 
+                      CASE
+                          WHEN il.status = 'รอรับเรื่อง' THEN ir.description
+                          ELSE il.comment
+                      END,
                     'updated_at', 
-                        CASE 
-                            WHEN il.status = 'กำลังดำเนินการ' THEN il.ongoingat
-                            WHEN il.status = 'เสร็จสิ้น' THEN il.endat
-                            ELSE ir.created_at
-                        END,
+                      CASE 
+                          WHEN il.status = 'กำลังดำเนินการ' THEN il.ongoingat
+                          WHEN il.status = 'เสร็จสิ้น' THEN il.endat
+                          ELSE ir.created_at
+                      END,
                     'images', 
                         (SELECT COALESCE(jsonb_agg(ii.file_url), '[]') 
                         FROM issue_image ii 
                         WHERE ii.issue_log_id = il.id)
-                ) ORDER BY il.ongoingat ASC
+                ) ORDER BY 
+        CASE 
+            WHEN il.status = 'รอรับเรื่อง' THEN 1  
+            WHEN il.status = 'กำลังดำเนินการ' THEN 2  
+            WHEN il.status = 'เสร็จสิ้น' THEN 3  
+            ELSE 4 
+        END,
+        il.ongoingat ASC  -- ✅ "กำลังดำเนินการ" เรียงจากเก่าไปใหม่
             ), '[]') AS status_updates
 
         FROM issues ir

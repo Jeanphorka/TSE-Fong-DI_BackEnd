@@ -3,6 +3,7 @@ const cors = require("cors");
 const authRoutes = require('./routes/authRoutes');
 const dropdownRoutes = require('./routes/dropdownRoutes');
 const issueReportRoutes = require("./routes/issueReportRoutes");
+const actionAdminRoutes = require("./routes/actionAdminRoutes");
 require('dotenv').config();
 
 const swaggerUi = require('swagger-ui-express');
@@ -21,15 +22,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 app.use('/api/auth', authRoutes);
 app.use("/api/dropdown", dropdownRoutes);
 app.use("/api/issue-reports", issueReportRoutes);
-
-
-const cors = require("cors");
-
-app.use(cors({
-  origin: "http://localhost:3000",  
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true
-}));
+app.use("/api/action-admin", actionAdminRoutes);
 
 
 const PORT = process.env.PORT || 4000;

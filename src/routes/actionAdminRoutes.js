@@ -9,7 +9,7 @@ const authMiddleware = require('../middlewares/authMiddleware');
  *   put:
  *     summary: อัปเดตสถานะของ Issue และอัปโหลดรูปภาพ
  *     description: ใช้สำหรับอัปเดตสถานะของปัญหา เช่น "กำลังดำเนินการ" หรือ "เสร็จสิ้น" และสามารถแนบรูปภาพเพิ่มเติมได้
- *     tags: [Issues]
+ *     tags: [ActionAdmin]
  *     security:
  *       - BearerAuth: []
  *     parameters:
@@ -93,7 +93,7 @@ router.put('/update/:id', authMiddleware, ActionAdminController.updateIssueStatu
  *     summary: ลบรายงานปัญหาและไฟล์ที่เกี่ยวข้อง
  *     description: ใช้เพื่อลบ Issue ออกจากระบบ โดยจะลบไฟล์รูปภาพจาก S3 และฐานข้อมูลทั้งหมดที่เกี่ยวข้องกับ Issue นั้น ๆ โดยจะเก็บค่าlog delete ไว้แล้วเปลี่ยน issue id ที่ถูกลบเป็น null ทั้งหมด
  *     tags:
- *       - Issues
+ *       - ActionAdmin
  *     security:
  *       - BearerAuth: []
  *     parameters:

@@ -14,7 +14,7 @@ const authMiddleware = require("../middlewares/authMiddleware");
  *       - **ใช้ API นี้เพื่อดึงข้อมูลปัญหาที่ผู้ใช้แจ้งเองเท่านั้น**
  *       - ✅ **ต้องล็อกอินและส่ง Token**
  *     tags:
- *       - Issue Reports
+ *       - Issue each Reports
  *     parameters:
  *       - in: header
  *         name: Authorization
@@ -121,7 +121,7 @@ router.get("/", authMiddleware, IssueReportController.getUserIssues);
  *         }
  *         ```
  *     tags:
- *       - Issue Reports
+ *       - Issue each Reports
  *     parameters:
  *       - in: header
  *         name: Authorization

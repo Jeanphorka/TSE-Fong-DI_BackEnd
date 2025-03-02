@@ -4,6 +4,7 @@ const authRoutes = require('./routes/authRoutes');
 const dropdownRoutes = require('./routes/dropdownRoutes');
 const issueReportRoutes = require("./routes/issueReportRoutes");
 const actionAdminRoutes = require("./routes/actionAdminRoutes");
+const allReportRoutes = require("./routes/allReportRoute");
 require('dotenv').config();
 
 const swaggerUi = require('swagger-ui-express');
@@ -23,6 +24,7 @@ app.use('/api/auth', authRoutes);
 app.use("/api/dropdown", dropdownRoutes);
 app.use("/api/issue-reports", issueReportRoutes);
 app.use("/api/action-admin", actionAdminRoutes);
+app.use("/api/all-issue", allReportRoutes);
 
 
 const PORT = process.env.PORT || 4000;

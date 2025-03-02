@@ -28,18 +28,27 @@ exports.login = async (req, res) => {
         const token = jwt.sign(
             { userId: user.id, username: user.username },
             JWT_SECRET,
-            { expiresIn: '1h' }
+            { expiresIn: '24h' }
         );
         
 
-        res.status(200).json({ message: 'Login successful', token });
+        res.status(200).json({
+            message: 'Login successful',
+            token,
+            user: {
+                id: user.id,
+                username: user.username,
+                full_name: user.full_name,
+                role: user.role,
+            },
+        });
     } catch (error) {
         console.error('Login failed:', error.message);
         res.status(500).json({ message: 'Internal Server Error', error: error.message });
     }
 };
 
-// ฟังก์ชันสำหรับเพิ่มผู้ใช้ (เชิงทดสอบ)
+// ฟังก์ชันสำหรับเพิ่มผู้ใช้ 
 exports.createUser = async (req, res) => {
     const { username, password, full_name } = req.body;
 
@@ -47,6 +56,12 @@ exports.createUser = async (req, res) => {
     if (!username || !password || !full_name) {
         return res.status(400).json({ message: 'All fields are required' });
     }
+
+    // ตรวจสอบว่ามี username นี้อยู่ในระบบแล้วหรือไม่
+        const existingUser = await userModel.getUserByUsername(username);
+        if (existingUser) {
+            return res.status(409).json({ message: 'Username already exists' }); 
+        }
 
     // เข้ารหัสรหัสผ่านก่อนบันทึก
     const hashedPassword = await hashPassword(password);

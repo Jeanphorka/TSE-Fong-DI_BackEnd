@@ -3,7 +3,7 @@ const pool = require('../../config/db');
 
 // เพิ่มผู้ใช้ใหม่
 exports.createUser = async (username, password, full_name) => {
-    const query = 'INSERT INTO users (username, password, full_name) VALUES ($1, $2, $3) RETURNING *';
+    const query = 'INSERT INTO users (username, password, full_name , role) VALUES ($1, $2, $3 , "user") RETURNING *';
     const result = await pool.query(query, [username, password, full_name]);
     return result.rows[0];
 };

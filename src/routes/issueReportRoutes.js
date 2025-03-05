@@ -99,6 +99,74 @@ const authMiddleware = require("../middlewares/authMiddleware");
  */
 router.get("/", authMiddleware, IssueReportController.getUserIssues);
 
+/**
+ * @swagger
+ * /api/issue-reports/{id}:
+ *   get:
+ *     summary: Get an issue report by ID
+ *     description: ดึงข้อมูลของ issue report ตาม `id` ที่ระบุ โดยต้องใช้ Token (Bearer Authentication)
+ *     tags:
+ *       - Issue each Reports
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: "Issue ID ที่ต้องการดูข้อมูล"
+ *     responses:
+ *       200:
+ *         description: "Success - ข้อมูลของ Issue"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                   example: 1
+ *                 transaction_id:
+ *                   type: string
+ *                   example: "IS-02032025-0001"
+ *                 reporter_id:
+ *                   type: integer
+ *                   example: 65107420000
+ *                 username:
+ *                   type: string
+ *                   example: "JohnDoe"
+ *                 description:
+ *                   type: string
+ *                   example: "ไฟไม่ติดในห้องเรียน"
+ *                 status:
+ *                   type: string
+ *                   example: "กำลังดำเนินการ"
+ *                 created_at:
+ *                   type: string
+ *                   format: date-time
+ *                   example: "2025-03-02T07:35:33.685Z"
+ *                 updated_at:
+ *                   type: string
+ *                   format: date-time
+ *                   example: "2025-03-02T07:38:27.912Z"
+ *                 images:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                     example: "https://fongdi.s3.ap-southeast-2.amazonaws.com/uploads/1740900932259-289440134.jpg"
+ *       400:
+ *         description: "Bad Request - ID ไม่ถูกต้อง"
+ *       401:
+ *         description: "Unauthorized - ไม่มี Token หรือ Token ไม่ถูกต้อง"
+ *       403:
+ *         description: "Forbidden - ไม่มีสิทธิ์เข้าถึง Issue นี้"
+ *       404:
+ *         description: "Not Found - ไม่พบ Issue นี้"
+ *       500:
+ *         description: "Internal Server Error - มีข้อผิดพลาดภายในเซิร์ฟเวอร์"
+ */
+router.get("/:id", authMiddleware, IssueReportController.getIssueById);
 
 /**
  * @swagger
@@ -206,5 +274,7 @@ router.get("/", authMiddleware, IssueReportController.getUserIssues);
  *         description: Internal Server Error
  */
 router.post("/", authMiddleware, IssueReportController.createIssueReport);
+
+
 
 module.exports = router;

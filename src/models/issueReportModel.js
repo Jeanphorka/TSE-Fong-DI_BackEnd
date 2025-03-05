@@ -82,7 +82,7 @@ const IssueReportModel = {
             WHEN il.status = 'เสร็จสิ้น' THEN 3  
             ELSE 4 
         END,
-        il.ongoingat ASC  -- ✅ "กำลังดำเนินการ" เรียงจากเก่าไปใหม่
+        il.ongoingat ASC  
             ), '[]') AS status_updates
 
         FROM issues ir
@@ -102,7 +102,72 @@ const IssueReportModel = {
     } catch (error) {
         throw error;
     }
+  },
+
+  getIssueById: async (id) => {
+    try {
+      const query = `
+        SELECT 
+          ir.id, 
+          ir.transaction_id,
+          ir.reporter_id, 
+          u.username, 
+          ir.description, 
+          ic.category_name AS title,  
+          ir.status,  
+          loc.building,  
+          loc.floor,     
+          loc.room,      
+          ir.created_at, 
+          ir.updated_at,
+
+          COALESCE(jsonb_agg(
+              jsonb_build_object(
+                  'status', il.status,
+                  'description', 
+                    CASE
+                        WHEN il.status = 'รอรับเรื่อง' THEN ir.description
+                        ELSE il.comment
+                    END,
+                  'updated_at', 
+                    CASE 
+                        WHEN il.status = 'กำลังดำเนินการ' THEN il.ongoingat
+                        WHEN il.status = 'เสร็จสิ้น' THEN il.endat
+                        ELSE ir.created_at
+                    END,
+                  'images', 
+                      (SELECT COALESCE(jsonb_agg(ii.file_url), '[]') 
+                      FROM issue_image ii 
+                      WHERE ii.issue_log_id = il.id)
+              ) ORDER BY 
+      CASE 
+          WHEN il.status = 'รอรับเรื่อง' THEN 1  
+          WHEN il.status = 'กำลังดำเนินการ' THEN 2  
+          WHEN il.status = 'เสร็จสิ้น' THEN 3  
+          ELSE 4 
+      END,
+      il.ongoingat ASC 
+          ), '[]') AS status_updates
+
+      FROM issues ir
+      LEFT JOIN issue_categories ic ON ir.problem_id = ic.id
+      LEFT JOIN users u ON ir.reporter_id = u.id
+      LEFT JOIN locations loc ON ir.location_id = loc.id
+      LEFT JOIN issue_log il ON ir.id = il.issue_id
+      WHERE ir.id = $1
+      GROUP BY ir.id, ir.transaction_id, ir.reporter_id, u.username, ir.description,  
+              ic.category_name, ir.status, loc.building, loc.floor, 
+              loc.room, ir.created_at, ir.updated_at
+      ORDER BY ir.created_at DESC;
+      `;
+
+      const result = await pool.query(query, [id]);
+      return result.rows[0] || null;
+  } catch (error) {
+      throw error;
   }
+}
+  
 };
 
 module.exports = IssueReportModel;

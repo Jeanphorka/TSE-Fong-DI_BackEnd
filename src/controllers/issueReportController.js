@@ -66,6 +66,7 @@ const IssueReportController = {
 
   getUserIssues: async (req, res) => {
     try {
+
       const userId = req.user?.userId;
       if (!userId) {
         return res.status(401).json({ error: "Unauthorized", message: "User ID is missing" });
@@ -77,7 +78,37 @@ const IssueReportController = {
       console.error("Error fetching issues:", err);
       res.status(500).json({ error: "Internal Server Error" });
     }
+  },
+
+  getIssueById: async (req, res) => {
+    try {
+      const userId = req.user?.userId;
+      const { id } = req.params;
+
+      if (!userId) {
+        return res.status(401).json({ error: "Unauthorized", message: "User ID is missing" });
+      }
+
+      if (!id) {
+        return res.status(400).json({ error: "Missing issue ID" });
+      }
+
+      const issue = await IssueReportModel.getIssueById(id);
+      
+      if (!issue) {
+        return res.status(404).json({ error: "Not Found", message: "Issue not found" });
+      }
+      if (String(issue.reporter_id) !== String(userId)) {
+        return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this issue" });
+      }      
+
+      res.status(200).json(issue);
+    } catch (err) {
+      console.error("Error fetching issue by ID:", err);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
   }
+
 };
 
 module.exports = IssueReportController;

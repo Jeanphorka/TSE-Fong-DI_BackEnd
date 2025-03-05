@@ -50,27 +50,32 @@ exports.login = async (req, res) => {
 
 // ฟังก์ชันสำหรับเพิ่มผู้ใช้ 
 exports.createUser = async (req, res) => {
-    const { username, password, full_name } = req.body;
+    const { username, password, full_name, phone_number } = req.body;
 
     // ตรวจสอบการกรอกข้อมูล
-    if (!username || !password || !full_name) {
+    if (!username || !password || !full_name || !phone_number) {
         return res.status(400).json({ message: 'All fields are required' });
     }
 
     // ตรวจสอบว่ามี username นี้อยู่ในระบบแล้วหรือไม่
-        const existingUser = await userModel.getUserByUsername(username);
-        if (existingUser) {
-            return res.status(409).json({ message: 'Username already exists' }); 
-        }
+    const existingUser = await userModel.getUserByUsername(username);
+    if (existingUser) {
+        return res.status(409).json({ message: 'Username already exists' });
+    }
 
     // เข้ารหัสรหัสผ่านก่อนบันทึก
     const hashedPassword = await hashPassword(password);
 
     // บันทึกข้อมูลผู้ใช้
-    const user = await userModel.createUser(username, hashedPassword, full_name);
-    if (user) {
-        res.status(201).json({ message: 'User created successfully' });
-    } else {
+    try {
+        const user = await userModel.createUser(username, hashedPassword, full_name, phone_number);
+        if (user) {
+            res.status(201).json({ message: 'User created successfully', user });
+        } else {
+            res.status(500).json({ message: 'Failed to create user' });
+        }
+    } catch (error) {
+        console.error(error);
         res.status(500).json({ message: 'Failed to create user' });
     }
 };

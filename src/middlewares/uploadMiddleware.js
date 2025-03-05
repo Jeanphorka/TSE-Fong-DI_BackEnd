@@ -37,7 +37,7 @@ const upload = multer({
       cb(null, `uploads/${uniqueSuffix}${path.extname(file.originalname)}`);
     },
   }),
-  limits: { fileSize: 5 * 1024 * 1024 }, // จำกัดขนาดไฟล์ 5MB
+  limits: { fileSize: 10 * 1024 * 1024 }, // จำกัดขนาดไฟล์ 5MB
   fileFilter: fileFilter,
 });
 

@@ -26,10 +26,15 @@ exports.login = async (req, res) => {
         }
 
         const token = jwt.sign(
-            { userId: user.id, username: user.username },
+            {
+                userId: user.id,
+                username: user.username,
+                role: user.role 
+            },
             JWT_SECRET,
             { expiresIn: '24h' }
         );
+
         
 
         res.status(200).json({

@@ -83,7 +83,9 @@ const IssueReportController = {
   getIssueById: async (req, res) => {
     try {
       const userId = req.user?.userId;
+      const role = req.user?.role; 
       const { id } = req.params;
+      
 
       if (!userId) {
         return res.status(401).json({ error: "Unauthorized", message: "User ID is missing" });
@@ -94,13 +96,18 @@ const IssueReportController = {
       }
 
       const issue = await IssueReportModel.getIssueById(id);
-      
+
       if (!issue) {
         return res.status(404).json({ error: "Not Found", message: "Issue not found" });
       }
-      if (String(issue.reporter_id) !== String(userId)) {
+
+      // เงื่อนไขตรวจสอบการเข้าถึง
+      const isOwner = String(issue.reporter_id) === String(userId);
+      const isAdmin = role === "admin";
+
+      if (!isOwner && !isAdmin) {
         return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this issue" });
-      }      
+      }
 
       res.status(200).json(issue);
     } catch (err) {

@@ -25,13 +25,23 @@ const DropdownModel = {
       "SELECT room_type_id FROM locations WHERE id = $1",
       [locationId], callback);
   },
+  
+  // หาทำเล (location) แรกของอาคาร
+  getFirstLocationByBuilding: (building, callback) => {
+    const query = `
+      SELECT id FROM locations
+      WHERE building = $1
+      LIMIT 1
+    `;
+    db.query(query, [building], callback);
+  },
 
   // ดึงปัญหาตามประเภทห้อง
   getIssuesByRoomType: (roomTypeId, callback) => {
     db.query(
       "SELECT i.category_name FROM issue_categories i JOIN issue_room_type irt ON i.id = irt.issue_id WHERE irt.room_type_id = $1",
       [roomTypeId], callback);
-  },
+  }
 };
 
 module.exports = DropdownModel;

@@ -146,12 +146,19 @@ router.get("/rooms", DropdownController.getRooms);
  * @swagger
  * /api/dropdown/issues:
  *   get:
- *     summary: Get issue types based on selected room
+ *     summary: Get issue types based on selected room or building
  *     description: |
- *       - **ใช้ API นี้หลังจากเลือกห้อง**
- *       - **ต้องส่ง `location_id` จาก API `/rooms`**
- *       - ✅ **ตัวอย่าง URL ที่ถูกต้อง:** `/api/dropdown/issues?location_id=1`
- *       - ❌ **ถ้าไม่ส่ง `location_id` จะได้ Error 400**
+ *       ใช้ API นี้เพื่อดึงรายการประเภทปัญหา  
+ *       รองรับทั้งกรณีเลือกห้อง หรือเลือกแค่อาคาร (เช่น ลานจอดรถ)
+ *       
+ *       🔹 กรณีที่ 1: ส่ง `location_id` (ใช้เมื่อเลือกห้อง)
+ *       - ได้จาก API `/rooms`
+ *       - ✅ ตัวอย่าง: `/api/dropdown/issues?location_id=1`
+ *       
+ *       🔹 กรณีที่ 2: ส่ง `building` (ใช้เมื่อเลือกแค่อาคาร ไม่มีชั้น/ห้อง)
+ *       - ✅ ตัวอย่าง: `/api/dropdown/issues?building=ลานจอดรถ`
+ *       
+ *       ❌ ถ้าไม่ส่งทั้ง `location_id` และ `building` → จะได้ Error 400
  *     tags:
  *       - Dropdown
  *     parameters:
@@ -159,13 +166,19 @@ router.get("/rooms", DropdownController.getRooms);
  *         name: location_id
  *         schema:
  *           type: integer
- *         required: true
+ *         required: false
  *         description: |
- *           - **รหัส `location_id` ของห้องที่เลือก**
- *           - **ได้มาจาก API `/rooms`**
+ *           🔹 `location_id` ของห้องที่เลือก (กรณีเลือกห้อง)
+ *       - in: query
+ *         name: building
+ *         schema:
+ *           type: string
+ *         required: false
+ *         description: |
+ *           🔹 ชื่ออาคาร (กรณีเลือกแค่อาคาร เช่น ลานจอดรถ)
  *     responses:
  *       200:
- *         description: List of issues retrieved successfully.
+ *         description: ดึงรายการปัญหาเรียบร้อยแล้ว
  *         content:
  *           application/json:
  *             schema:
@@ -181,8 +194,7 @@ router.get("/rooms", DropdownController.getRooms);
  *                         example: "อุปกรณ์ชำรุด"
  *       400:
  *         description: |
- *           ❌ **เกิดข้อผิดพลาด: ไม่ได้ส่ง `location_id` ใน URL**
- *           - ตัวอย่าง Response:
+ *           ❌ ข้อผิดพลาด: ไม่ได้ส่ง `location_id` หรือ `building`
  *         content:
  *           application/json:
  *             schema:
@@ -190,8 +202,9 @@ router.get("/rooms", DropdownController.getRooms);
  *               properties:
  *                 error:
  *                   type: string
- *                   example: "Missing location_id parameter"
+ *                   example: "Missing location_id or building"
  */
 router.get("/issues", DropdownController.getIssuesByRoom);
+
 
 module.exports = router;

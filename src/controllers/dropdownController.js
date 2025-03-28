@@ -55,13 +55,31 @@ const DropdownController = {
     }
   },
 
-  //  ดึงปัญหาตามห้องที่เลือก (ใช้ location_id)
+  // ดึงประเภทปัญหาตามห้อง หรือจาก building โดยตรง
   getIssuesByRoom: async (req, res) => {
     try {
-      const { location_id } = req.query;
-      if (!location_id) return res.status(400).json({ error: "Missing location_id parameter" });
+      let { location_id, building } = req.query;
 
-      //  ดึง room_type_id ของห้องนั้นจาก location_id
+      // ถ้ายังไม่มี location_id → หาจาก building
+      if (!location_id && building) {
+        const locationResult = await new Promise((resolve, reject) => {
+          DropdownModel.getFirstLocationByBuilding(building, (err, data) => {
+            if (err) reject(err);
+            else resolve(data);
+          });
+        });
+
+        if (locationResult.rows.length === 0) {
+          return res.status(404).json({ error: "No location found for this building" });
+        }
+
+        location_id = locationResult.rows[0].id;
+      }
+
+      if (!location_id) {
+        return res.status(400).json({ error: "Missing location_id or building" });
+      }
+
       const roomTypeResults = await new Promise((resolve, reject) => {
         DropdownModel.getRoomTypeByLocation(location_id, (err, data) => {
           if (err) reject(err);
@@ -70,12 +88,11 @@ const DropdownController = {
       });
 
       if (roomTypeResults.rows.length === 0) {
-        return res.status(404).json({ error: "Location not found" });
+        return res.status(404).json({ error: "Room type not found" });
       }
 
       const roomTypeId = roomTypeResults.rows[0].room_type_id;
 
-      //  ดึงรายการปัญหาที่เกี่ยวข้องกับ room_type_id
       const issuesResults = await new Promise((resolve, reject) => {
         DropdownModel.getIssuesByRoomType(roomTypeId, (err, data) => {
           if (err) reject(err);
@@ -84,7 +101,6 @@ const DropdownController = {
       });
 
       res.json({ issues: issuesResults.rows });
-
     } catch (error) {
       res.status(500).json({ error: error.message });
     }

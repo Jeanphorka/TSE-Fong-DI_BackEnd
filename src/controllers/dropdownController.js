@@ -100,7 +100,11 @@ const DropdownController = {
         });
       });
 
-      res.json({ issues: issuesResults.rows });
+      res.json({
+        location_id, //  ส่ง location_id กลับไปด้วย
+        issues: issuesResults.rows
+      });
+      
     } catch (error) {
       res.status(500).json({ error: error.message });
     }

@@ -50,6 +50,11 @@ const ActionAdminModel = {
 
       // ลบ Issue จริง
       await pool.query(`DELETE FROM issues WHERE id = $1`, [id]);
+
+      // รีเซ็ต sequence ให้วิ่งต่อจาก MAX(id)
+      await db.query(
+        `SELECT setval('issues_new_id_seq', (SELECT COALESCE(MAX(id), 0) FROM issues), true);`
+    );
     } catch (error) {
       throw error;
     }

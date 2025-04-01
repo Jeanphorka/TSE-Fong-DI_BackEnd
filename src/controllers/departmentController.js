@@ -160,10 +160,46 @@ const DepartmentController = {
       console.error('❌ Get departments failed:', err.message);
       res.status(500).json({ error: 'เกิดข้อผิดพลาดในการดึงข้อมูลหน่วยงาน' });
     }
-  }
-  
+  },
 
+  getDepartmentById: async (req, res) => {
+    const id = parseInt(req.params.id);
+    try {
+      const result = await DepartmentModel.getDepartmentWithRelations(id);
+      const rows = result.rows;
   
+      if (rows.length === 0) {
+        return res.status(404).json({ error: 'ไม่พบหน่วยงานนี้' });
+      }
+  
+      const department = {
+        id: rows[0].department_id,
+        name: rows[0].department_name,
+        areas: [],
+        issueTypes: []
+      };
+  
+      const areaSet = new Set();
+      const issueSet = new Set();
+  
+      for (const row of rows) {
+        if (row.area_id && !areaSet.has(row.area_id)) {
+          department.areas.push({ id: row.area_id, name: row.area_name });
+          areaSet.add(row.area_id);
+        }
+  
+        if (row.issue_type_id && !issueSet.has(row.issue_type_id)) {
+          department.issueTypes.push({ id: row.issue_type_id, name: row.issue_type_name });
+          issueSet.add(row.issue_type_id);
+        }
+      }
+  
+      res.status(200).json(department);
+    } catch (err) {
+      console.error('❌ getDepartmentById error:', err.message);
+      res.status(500).json({ error: 'ดึงข้อมูลหน่วยงานล้มเหลว' });
+    }
+  }
   
 };
 

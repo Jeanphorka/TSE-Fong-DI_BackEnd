@@ -6,6 +6,7 @@ const issueReportRoutes = require("./routes/issueReportRoutes");
 const actionAdminRoutes = require("./routes/actionAdminRoutes");
 const allReportRoutes = require("./routes/allReportRoute");
 const departmentRoutes = require('./routes/departmentRoutes');
+const userRoutes = require('./routes/userRoutes');
 
 require('dotenv').config();
 
@@ -37,11 +38,12 @@ app.use("/api/issue-reports", issueReportRoutes);
 app.use("/api/action-admin", actionAdminRoutes);
 app.use("/api/all-issue", allReportRoutes);
 app.use('/api/departments', departmentRoutes);
+app.use('/api/users', userRoutes);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
     console.log(`🌐 Server running on port ${PORT}`);
-    console.log(`📑 Swagger Docs: https://tse-fong-di-back-end.vercel.app/api-docs`);
+    console.log(`📑 Swagger Docs: http://localhost:4000/api-docs`);
 });
 
 module.exports = app;

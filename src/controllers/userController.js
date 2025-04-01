@@ -33,7 +33,7 @@ const UserController = {
       res.status(201).json({
         message: 'สร้างผู้ใช้สำเร็จ',
         userId,
-        password: rawcode
+        code: rawcode
       });
     } catch (err) {
       console.error('❌ createUser error:', err.message);

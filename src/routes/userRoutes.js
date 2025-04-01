@@ -25,7 +25,7 @@ const authMiddleware = require("../middlewares/authMiddleware");
  *                 properties:
  *                   id:
  *                     type: integer
- *                   password:
+ *                   code:
  *                     type: string
  *                     example: Tse0001
  *                   username:

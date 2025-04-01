@@ -11,8 +11,8 @@ const options = {
         },
         servers: [
             {
-                url: 'http://localhost:4000',
-                description: 'Local server'
+                url: 'https://tse-fong-di-back-end.vercel.app/',
+                description: 'My API Documentation'
             }
         ]
     },

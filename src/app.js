@@ -12,6 +12,10 @@ require('dotenv').config();
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpecs = require('../config/swaggerConfig');
 
+// CDN CSS
+
+const CSS_URL =
+  "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui.min.css";
 
 const app = express();
 app.use(cors());
@@ -22,7 +26,7 @@ app.get('/', (req,res) => {
 })
 
 // เรียก Swagger UI
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs , { customCssUrl: CSS_URL }));
 
 // Routes
 app.use('/api/auth', authRoutes);

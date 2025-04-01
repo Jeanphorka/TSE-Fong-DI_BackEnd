@@ -23,7 +23,7 @@
     "path": "^0.12.7",
     "pg": "^8.13.3",
     "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.1"
+    "swagger-ui-express": "^4.3.0"
   },
   "devDependencies": {
     "@vercel/node": "^5.1.14",

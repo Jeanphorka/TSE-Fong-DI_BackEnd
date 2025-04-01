@@ -17,6 +17,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.get('/', (req,res) => {
+    res.send('Welcome to the API')
+})
+
 // เรียก Swagger UI
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
@@ -31,7 +35,7 @@ app.use('/api/departments', departmentRoutes);
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
     console.log(`🌐 Server running on port ${PORT}`);
-    console.log(`📑 Swagger Docs: http://localhost:${PORT}/api-docs`);
+    console.log(`📑 Swagger Docs: https://tse-fong-di-back-end.vercel.app/api-docs`);
 });
 
 module.exports = app;

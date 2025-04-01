@@ -277,4 +277,72 @@ router.get('/options', authMiddleware ,DepartmentController.getDepartmentOptions
  */
 router.get('/all', authMiddleware , DepartmentController.getAllDepartments);
 
+/**
+ * @swagger
+ * /api/departments/{id}:
+ *   get:
+ *     tags:
+ *       - Departments
+ *     summary: ดึงข้อมูลหน่วยงานตาม ID
+ *     description: ใช้สำหรับดึงข้อมูลหน่วยงานเพื่อนำไปแสดงในหน้าฟอร์มแก้ไข พร้อมพื้นที่และประเภทปัญหาที่รับผิดชอบ โดยต้องเอาข้อมูลของเดิมมาใส่ใน fill ก่อน หากแก้ไขก็แก้ไขได้ แต่ตอนส่งต้องส่งข้อมูลครบทุกตัวเพื่ออัปเดตอีกครั้ง
+ *     security:
+ *       - BearerAuth: []  # ✅ ต้องแนบ Token
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: รหัสของหน่วยงานที่ต้องการดึง
+ *     responses:
+ *       200:
+ *         description: ดึงข้อมูลหน่วยงานสำเร็จ
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                   example: 2
+ *                 name:
+ *                   type: string
+ *                   example: ฝ่ายซ่อมบำรุง
+ *                 areas:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         example: 1
+ *                       name:
+ *                         type: string
+ *                         example: ตึกอำนวยการ
+ *                 issueTypes:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         example: 3
+ *                       name:
+ *                         type: string
+ *                         example: ประปา
+ *       404:
+ *         description: ไม่พบหน่วยงาน
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: ไม่พบหน่วยงานนี้
+ *       500:
+ *         description: เกิดข้อผิดพลาดในระบบ
+ */
+router.get('/:id', authMiddleware, DepartmentController.getDepartmentById);
+
 module.exports = router;

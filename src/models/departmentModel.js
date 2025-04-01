@@ -106,6 +106,25 @@ const DepartmentModel = {
       ORDER BY d.id;
     `;
     return db.query(query);
+  },
+
+  getDepartmentWithRelations: async (id) => {
+    const query = `
+       SELECT
+        d.id AS department_id,
+        d.name AS department_name,
+        a.id AS area_id,
+        a.name AS area_name,
+        i.id AS issue_type_id,
+        i.category_name AS issue_type_name
+      FROM departments d
+      LEFT JOIN department_areas da ON da.department_id = d.id
+      LEFT JOIN areas a ON a.id = da.area_id
+      LEFT JOIN department_issue_types dit ON dit.department_id = d.id
+      LEFT JOIN issue_categories i ON i.id = dit.issue_type_id
+      WHERE d.id = $1
+    `;
+    return db.query(query, [id]);
   }
   
   

@@ -116,9 +116,63 @@ const ActionAdminController = {
       console.error("Internal Server Error:", error);
       res.status(500).json({ error: error.message });
     }
+  },
+
+  updateDepartment: async (req, res) => {
+    try {
+      const { id } = req.params; // issue_id
+      const { department_id } = req.body;
+      const adminId = req.user?.userId;
+  
+      if (!adminId) {
+        return res.status(401).json({ error: "Unauthorized", message: "Admin ID is missing" });
+      }
+  
+      // ตรวจสอบว่า Issue มีอยู่จริง
+      const existingIssue = await actionAdminModel.getIssueById(id);
+      if (!existingIssue) {
+        return res.status(404).json({ error: "Issue not found" });
+      }
+  
+      // ตรวจสอบว่า department_id ไม่ว่าง
+      if (!department_id || isNaN(parseInt(department_id))) {
+        return res.status(400).json({ error: "กรุณาระบุ department_id ที่ถูกต้อง" });
+      }
+  
+      // อัปเดต assign_to ใน issue
+      const updated = await actionAdminModel.updateDepartment(id, department_id);
+
+      // ดึงชื่อหน่วยงาน
+      const departmentResult = await actionAdminModel.getDepartmentName(department_id);
+
+      if (!departmentResult) {
+        return res.status(404).json({ error: "ไม่พบหน่วยงานที่ระบุ" });
+      }
+      
+      const departmentName = departmentResult.name;
+
+      // log การ assign
+      await IssueLogModel.createIssueLog(
+        adminId,
+        id,
+        "assign",     // action
+        null,         // status
+        null, null,   // ongoing_at, end_at
+        false,        // has_images
+        `มอบหมายให้หน่วยงาน ${departmentName}`
+      );
+  
+      res.status(200).json({
+        message: "อัปเดตหน่วยงานสำเร็จ",
+        assign_to: department_id
+      });
+  
+    } catch (error) {
+      console.error("updateDepartment error:", error.message);
+      res.status(500).json({ error: error.message });
+    }
   }
 
-  
 };
 
 module.exports = ActionAdminController;

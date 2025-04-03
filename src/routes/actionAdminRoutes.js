@@ -123,4 +123,59 @@ router.put('/update/:id', authMiddleware, ActionAdminController.updateIssueStatu
  */
 router.delete('/delete/:id', authMiddleware, ActionAdminController.deleteIssueReport);
 
+/**
+ * @swagger
+ * /api/action-admin/update-department/{id}:
+ *   put:
+ *     tags:
+ *       - ActionAdmin
+ *     summary: อัปเดตหน่วยงานที่รับผิดชอบของเคส
+ *     description: อัปเดตช่อง assign_to ในตาราง issue โดยใช้ department_id และบันทึก log การมอบหมายให้หน่วยงาน
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: รหัสของเคสที่ต้องการอัปเดต
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - department_id
+ *             properties:
+ *               department_id:
+ *                 type: integer
+ *                 example: 3
+ *                 description: รหัสหน่วยงานใหม่ที่ต้องการมอบหมายให้รับผิดชอบ
+ *     responses:
+ *       200:
+ *         description: อัปเดตหน่วยงานสำเร็จ
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: อัปเดตหน่วยงานสำเร็จ
+ *                 assign_to:
+ *                   type: integer
+ *                   example: 3
+ *       400:
+ *         description: ข้อมูลไม่ถูกต้อง
+ *       401:
+ *         description: Unauthorized - ไม่พบ token หรือ token ไม่ถูกต้อง
+ *       404:
+ *         description: ไม่พบเคสหรือหน่วยงาน
+ *       500:
+ *         description: เกิดข้อผิดพลาดในระบบ
+ */
+router.put('/update-department/:id', authMiddleware, ActionAdminController.updateDepartment);
+
 module.exports = router;

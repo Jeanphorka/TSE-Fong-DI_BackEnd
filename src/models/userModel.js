@@ -24,7 +24,7 @@ const UserModel = {
     const countResult = await db.query(`SELECT COUNT(*) FROM users`);
     const userCount = parseInt(countResult.rows[0].count, 10) + 1;
     const rawcode = `Tse${userCount.toString().padStart(4, '0')}`;
-    const hashedPassword = await hashPassword(rawPassword);
+    const hashedPassword = await hashPassword(rawcode);
 
     // 2. เพิ่มผู้ใช้
     const result = await db.query(

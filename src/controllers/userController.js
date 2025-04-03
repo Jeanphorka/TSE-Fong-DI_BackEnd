@@ -29,7 +29,7 @@ const UserController = {
     }
 
     try {
-      const { userId, rawPassword } = await UserModel.createUser(username, fullName, role, departmentId);
+      const { userId, rawcode } = await UserModel.createUser(username, fullName, role, departmentId);
       res.status(201).json({
         message: 'สร้างผู้ใช้สำเร็จ',
         userId,

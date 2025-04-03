@@ -58,6 +58,22 @@ const ActionAdminModel = {
     } catch (error) {
       throw error;
     }
+  },
+
+  updateDepartment: async (issueId, departmentId) => {
+    const result = await pool.query(
+      'UPDATE issues SET assigned_to = $1, updated_at = NOW() WHERE id = $2 RETURNING assigned_to',
+      [departmentId, issueId]
+    );
+    return result.rows[0];
+  },
+
+  getDepartmentName: async (departmentId) => {
+    const result = await pool.query(
+      'SELECT name FROM departments WHERE id = $1',
+      [departmentId]
+    );
+    return result.rows[0];
   }
 };
 

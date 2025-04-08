@@ -2,6 +2,17 @@ const { getAllReports } = require("../models/allReportModel");
 
 const getAllReportsController = async (req, res) => {
   try {
+    const role = req.user?.role;
+    const adminId = req.user?.userId; // ดึง `adminId` จาก Token
+    const isAdmin = role === "admin";
+
+    if (!adminId) {
+      return res.status(401).json({ error: "Unauthorized", message: "Admin ID is missing" });
+    }
+
+    if (!isAdmin) {
+      return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this " });
+    }
     const reports = await getAllReports();
     res.json({ success: true, data: reports });
   } catch (error) {

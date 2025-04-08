@@ -3,6 +3,17 @@ const UserModel = require('../models/userModel');
 const UserController = {
     getAllUsers: async (req, res) => {
         try {
+          const role = req.user?.role;
+          const adminId = req.user?.userId; // ดึง `adminId` จาก Token
+          const isAdmin = role === "admin";
+          
+          if (!adminId) {
+            return res.status(401).json({ error: "Unauthorized", message: "Admin ID is missing" });
+          }
+
+          if (!isAdmin) {
+            return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this " });
+          }
           const result = await UserModel.getAllUsers();
           const users = result.rows.map((row) => ({
             id: row.id,
@@ -22,9 +33,21 @@ const UserController = {
     },
 
   createUser: async (req, res) => {
-    const { username, fullName, role, departmentId } = req.body;
+    const { username, fullName, role1, departmentId } = req.body;
+    const role = req.user?.role;
+    const adminId = req.user?.userId; // ดึง `adminId` จาก Token
+    const isAdmin = role === "admin";
+    
 
-    if (!username || !fullName || !role) {
+    if (!adminId) {
+      return res.status(401).json({ error: "Unauthorized", message: "Admin ID is missing" });
+    }
+
+    if (!isAdmin) {
+      return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this " });
+    }
+
+    if (!username || !fullName || !role1) {
       return res.status(400).json({ error: 'กรุณากรอกข้อมูลให้ครบถ้วน' });
     }
 
@@ -43,9 +66,21 @@ const UserController = {
 
   updateUser: async (req, res) => {
     const id = parseInt(req.params.id);
-    const { username, fullName, role, departmentId } = req.body;
+    const { username, fullName, role1, departmentId } = req.body;
+    const role = req.user?.role;
+    const adminId = req.user?.userId; // ดึง `adminId` จาก Token
+    const isAdmin = role === "admin";
+    
 
-    if (!username || !fullName || !role) {
+    if (!adminId) {
+      return res.status(401).json({ error: "Unauthorized", message: "Admin ID is missing" });
+    }
+
+    if (!isAdmin) {
+      return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this " });
+    }
+
+    if (!username || !fullName || !role1) {
     return res.status(400).json({ error: 'กรุณากรอกข้อมูลให้ครบถ้วน' });
     }
 
@@ -60,6 +95,18 @@ const UserController = {
 
   getUserById: async (req, res) => {
     const id = parseInt(req.params.id);
+    const role = req.user?.role;
+    const adminId = req.user?.userId; // ดึง `adminId` จาก Token
+    const isAdmin = role === "admin";
+    
+
+    if (!adminId) {
+      return res.status(401).json({ error: "Unauthorized", message: "Admin ID is missing" });
+    }
+
+    if (!isAdmin) {
+      return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this " });
+    }
     try {
       const result = await UserModel.getUserById(id);
       if (result.rows.length === 0) {
@@ -73,7 +120,19 @@ const UserController = {
 
   deleteUser: async (req, res) => {
     const id = parseInt(req.params.id);
-  
+    const role = req.user?.role;
+    const adminId = req.user?.userId; // ดึง `adminId` จาก Token
+    const isAdmin = role === "admin";
+    
+
+    if (!adminId) {
+      return res.status(401).json({ error: "Unauthorized", message: "Admin ID is missing" });
+    }
+
+    if (!isAdmin) {
+      return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this " });
+    }
+
     if (isNaN(id)) {
       return res.status(400).json({ error: 'รหัสผู้ใช้ไม่ถูกต้อง' });
     }

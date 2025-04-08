@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const { getAllReportsController } = require("../controllers/allReportController");
+const { getAllReportsController } = require("../controllers/AllreportController");
+const authMiddleware = require('../middlewares/authMiddleware');
 
 /**
  * @swagger
@@ -10,6 +11,8 @@ const { getAllReportsController } = require("../controllers/allReportController"
  *     description: API สำหรับดึงข้อมูลรายงานที่มีสถานะ "รอรับเรื่อง" รวมถึงรายละเอียดที่เกี่ยวข้อง เช่น วันที่แจ้ง, รูปภาพ, สถานที่, และประเภทของปัญหา
  *     tags: 
  *       - AllReports
+ *     security:
+ *       - BearerAuth: []
  *     responses:
  *       200:
  *         description: ดึงข้อมูลสำเร็จ
@@ -73,6 +76,6 @@ const { getAllReportsController } = require("../controllers/allReportController"
  *                   example: "Internal Server Error"
  */
 
-router.get("/", getAllReportsController);
+router.get("/", authMiddleware, getAllReportsController);
 
 module.exports = router;

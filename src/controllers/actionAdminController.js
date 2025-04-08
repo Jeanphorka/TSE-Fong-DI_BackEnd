@@ -9,9 +9,17 @@ const ActionAdminController = {
       try {
         const { id } = req.params; // รับ `issue_id`
         const { status, comment } = req.body; // รับค่าสถานะและคำอธิบายของเจ้าหน้าที่
+        const role = req.user?.role;
         const adminId = req.user?.userId; // ดึง `adminId` จาก Token
+        const isAdmin = role === "admin";
+        const isAgent = role === "agent";
+
         if (!adminId) {
           return res.status(401).json({ error: "Unauthorized", message: "Admin ID is missing" });
+        }
+
+        if (!isAdmin && !isAgent) {
+          return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this issue" });
         }
 
         // ตรวจสอบว่า Issue มีอยู่จริงหรือไม่
@@ -76,10 +84,16 @@ const ActionAdminController = {
   deleteIssueReport: async (req, res) => {
     try {
       const { id } = req.params; // รับ `issue_id`
+      const role = req.user?.role;
       const adminId = req.user?.userId; // ดึง `adminId` จาก Token
+      const isAdmin = role === "admin";
 
       if (!adminId) {
         return res.status(401).json({ error: "Unauthorized", message: "Admin ID is missing" });
+      }
+
+      if (!isAdmin) {
+        return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this issue" });
       }
 
       // ตรวจสอบว่า Issue มีอยู่จริง
@@ -121,11 +135,17 @@ const ActionAdminController = {
   updateDepartment: async (req, res) => {
     try {
       const { id } = req.params; // issue_id
+      const role = req.user?.role;
       const { department_id } = req.body;
       const adminId = req.user?.userId;
+      const isAdmin = role === "admin";
   
       if (!adminId) {
         return res.status(401).json({ error: "Unauthorized", message: "Admin ID is missing" });
+      }
+
+      if (!isAdmin) {
+        return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this issue" });
       }
   
       // ตรวจสอบว่า Issue มีอยู่จริง

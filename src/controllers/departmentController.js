@@ -3,6 +3,18 @@ const DepartmentModel = require('../models/departmentModel');
 const DepartmentController = {
   createDepartment: async (req, res) => {
     const { name, areaIds, issueTypeIds } = req.body;
+    const role = req.user?.role;
+    const adminId = req.user?.userId; // ดึง `adminId` จาก Token
+    const isAdmin = role === "admin";
+    
+
+    if (!adminId) {
+      return res.status(401).json({ error: "Unauthorized", message: "Admin ID is missing" });
+    }
+
+    if (!isAdmin) {
+      return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this" });
+    }
 
     if (!name || !Array.isArray(areaIds) || !Array.isArray(issueTypeIds)) {
       return res.status(400).json({ error: 'กรุณาระบุชื่อหน่วยงาน, พื้นที่ และประเภทปัญหา' });
@@ -47,6 +59,18 @@ const DepartmentController = {
   updateDepartment: async (req, res) => {
     const departmentId = parseInt(req.params.id);
     const { name, areaIds, issueTypeIds } = req.body;
+    const role = req.user?.role;
+    const adminId = req.user?.userId; // ดึง `adminId` จาก Token
+    const isAdmin = role === "admin";
+    
+
+    if (!adminId) {
+      return res.status(401).json({ error: "Unauthorized", message: "Admin ID is missing" });
+    }
+
+    if (!isAdmin) {
+      return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this" });
+    }
   
     if (!name || !Array.isArray(areaIds) || !Array.isArray(issueTypeIds)) {
       return res.status(400).json({ error: 'กรุณาระบุข้อมูลให้ครบถ้วน' });
@@ -94,6 +118,18 @@ const DepartmentController = {
 
   deleteDepartment: async (req, res) => {
     const departmentId = parseInt(req.params.id);
+    const role = req.user?.role;
+    const adminId = req.user?.userId; // ดึง `adminId` จาก Token
+    const isAdmin = role === "admin";
+    
+
+    if (!adminId) {
+      return res.status(401).json({ error: "Unauthorized", message: "Admin ID is missing" });
+    }
+
+    if (!isAdmin) {
+      return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this " });
+    }
   
     if (isNaN(departmentId)) {
       return res.status(400).json({ error: 'รหัสหน่วยงานไม่ถูกต้อง' });
@@ -109,6 +145,19 @@ const DepartmentController = {
 
   getDepartmentOptions: async (req, res) => {
     try {
+      const role = req.user?.role;
+      const adminId = req.user?.userId; // ดึง `adminId` จาก Token
+      const isAdmin = role === "admin";
+      
+
+      if (!adminId) {
+        return res.status(401).json({ error: "Unauthorized", message: "Admin ID is missing" });
+      }
+
+      if (!isAdmin) {
+        return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this " });
+      }
+
       const [areasResult, issuesResult] = await Promise.all([
         DepartmentModel.getAllAreas(),
         DepartmentModel.getAllIssueTypes()
@@ -128,6 +177,18 @@ const DepartmentController = {
     try {
       const result = await DepartmentModel.getAllDepartmentsWithRelations();
       const rows = result.rows;
+      const role = req.user?.role;
+      const adminId = req.user?.userId; // ดึง `adminId` จาก Token
+      const isAdmin = role === "admin";
+      
+
+      if (!adminId) {
+        return res.status(401).json({ error: "Unauthorized", message: "Admin ID is missing" });
+      }
+
+      if (!isAdmin) {
+        return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this " });
+      }
   
       // กลุ่มข้อมูลตาม department_id
       const grouped = {};
@@ -167,6 +228,18 @@ const DepartmentController = {
     try {
       const result = await DepartmentModel.getDepartmentWithRelations(id);
       const rows = result.rows;
+      const role = req.user?.role;
+      const adminId = req.user?.userId; // ดึง `adminId` จาก Token
+      const isAdmin = role === "admin";
+      
+
+      if (!adminId) {
+        return res.status(401).json({ error: "Unauthorized", message: "Admin ID is missing" });
+      }
+
+      if (!isAdmin) {
+        return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this " });
+      }
   
       if (rows.length === 0) {
         return res.status(404).json({ error: 'ไม่พบหน่วยงานนี้' });

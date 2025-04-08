@@ -33,12 +33,12 @@ const UserController = {
     },
 
   createUser: async (req, res) => {
-    const { username, fullName, role1, departmentId } = req.body;
+    const { username, fullName, role, departmentId } = req.body;
     
     try {
-      const role = req.user?.role;
+      const role1 = req.user?.role;
       const adminId = req.user?.userId; // ดึง `adminId` จาก Token
-      const isAdmin = role === "admin";
+      const isAdmin = role1 === "admin";
       
 
       if (!adminId) {
@@ -49,7 +49,7 @@ const UserController = {
         return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this " });
       }
 
-      if (!username || !fullName || !role1) {
+      if (!username || !fullName || !role) {
         return res.status(400).json({ error: 'กรุณากรอกข้อมูลให้ครบถ้วน' });
       }
 
@@ -67,12 +67,12 @@ const UserController = {
 
   updateUser: async (req, res) => {
     const id = parseInt(req.params.id);
-    const { username, fullName, role1, departmentId } = req.body;
+    const { username, fullName, role, departmentId } = req.body;
 
     try {
-      const role = req.user?.role;
+      const role1 = req.user?.role1;
       const adminId = req.user?.userId; // ดึง `adminId` จาก Token
-      const isAdmin = role === "admin";
+      const isAdmin = role1 === "admin";
       
 
       if (!adminId) {

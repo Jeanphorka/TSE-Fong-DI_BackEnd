@@ -104,8 +104,9 @@ const IssueReportController = {
       // เงื่อนไขตรวจสอบการเข้าถึง
       const isOwner = String(issue.reporter_id) === String(userId);
       const isAdmin = role === "admin";
+      const isAgent = role === "agent";
 
-      if (!isOwner && !isAdmin) {
+      if (!isOwner && !isAdmin && !isAgent) {
         return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this issue" });
       }
 

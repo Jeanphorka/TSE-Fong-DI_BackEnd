@@ -8,6 +8,7 @@ const allReportRoutes = require("./routes/allReportRoute");
 const departmentRoutes = require('./routes/departmentRoutes');
 const userRoutes = require('./routes/userRoutes');
 const issueDataRoutes = require('./routes/issueDataRoutes');
+const agentRoutes = require('./routes/agentRoutes');
 
 require('dotenv').config();
 
@@ -41,6 +42,7 @@ app.use("/api/all-issue", allReportRoutes);
 app.use('/api/departments', departmentRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/issue-data', issueDataRoutes);
+app.use('/api/agent', agentRoutes);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {

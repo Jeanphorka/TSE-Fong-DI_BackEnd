@@ -118,24 +118,24 @@ const DepartmentController = {
 
   deleteDepartment: async (req, res) => {
     const departmentId = parseInt(req.params.id);
-    const role = req.user?.role;
-    const adminId = req.user?.userId; // ดึง `adminId` จาก Token
-    const isAdmin = role === "admin";
     
-
-    if (!adminId) {
-      return res.status(401).json({ error: "Unauthorized", message: "Admin ID is missing" });
-    }
-
-    if (!isAdmin) {
-      return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this " });
-    }
-  
-    if (isNaN(departmentId)) {
-      return res.status(400).json({ error: 'รหัสหน่วยงานไม่ถูกต้อง' });
-    }
-  
     try {
+      const role = req.user?.role;
+      const adminId = req.user?.userId; // ดึง `adminId` จาก Token
+      const isAdmin = role === "admin";
+      
+
+      if (!adminId) {
+        return res.status(401).json({ error: "Unauthorized", message: "Admin ID is missing" });
+      }
+
+      if (!isAdmin) {
+        return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this " });
+      }
+    
+      if (isNaN(departmentId)) {
+        return res.status(400).json({ error: 'รหัสหน่วยงานไม่ถูกต้อง' });
+      } 
       await DepartmentModel.deleteDepartment(departmentId);
       return res.status(200).json({ message: 'ลบหน่วยงานเรียบร้อยแล้ว' });
     } catch (err) {

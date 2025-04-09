@@ -42,6 +42,37 @@ const ActionAdminController = {
         } else if (status === "เสร็จสิ้น") {
           action = "complete";
           endat = new Date().toISOString();
+        } else if (status === "ไม่เกี่ยวข้อง") {
+          action = "unassign";
+
+          // ล้างหน่วยงานออกจาก Issue
+          await actionAdminModel.updateDepartment(id, null);
+
+          // ดึงชื่อหน่วยงาน
+          const department_id = existingIssue.assigned_to;
+          const departmentResult = await actionAdminModel.getDepartmentName(department_id);
+          const departmentName = departmentResult.name;
+
+          // สร้าง log โดยระบุเหตุผลว่า "เคสนี้ไม่เกี่ยวข้องกับหน่วยงาน"
+          await IssueLogModel.createIssueLog(
+            adminId,
+            id,
+            action,
+            status,
+            null,
+            null,
+            false,
+            `เคสนี้ไม่เกี่ยวข้องกับหน่วยงาน ${departmentName}`
+          );
+        
+          return res.status(200).json({
+            message: "สถานะถูกอัปเดตเป็น 'ไม่เกี่ยวข้อง' และลบหน่วยงานที่รับผิดชอบเรียบร้อยแล้ว",
+            issue: {
+              id,
+              status: "ไม่เกี่ยวข้อง",
+              assigned_to: null
+            }
+          });
         }
 
         // รับ URL ของไฟล์ที่อัปโหลด
@@ -158,9 +189,6 @@ const ActionAdminController = {
       if (!department_id || isNaN(parseInt(department_id))) {
         return res.status(400).json({ error: "กรุณาระบุ department_id ที่ถูกต้อง" });
       }
-  
-      // อัปเดต assign_to ใน issue
-      const updated = await actionAdminModel.updateDepartment(id, department_id);
 
       // ดึงชื่อหน่วยงาน
       const departmentResult = await actionAdminModel.getDepartmentName(department_id);
@@ -171,12 +199,25 @@ const ActionAdminController = {
       
       const departmentName = departmentResult.name;
 
+      // ตรวจว่าตอนนี้ issue อยู่ในสถานะ "ไม่เกี่ยวข้อง" หรือไม่
+      let shouldUpdateStatus = false;
+      if (existingIssue.status === "ไม่เกี่ยวข้อง") {
+        shouldUpdateStatus = true;
+      }
+
+      // อัปเดต assign_to
+      await actionAdminModel.updateDepartment(id, department_id);
+
+      if (shouldUpdateStatus) {
+        await actionAdminModel.updateIssue(id, "รอรับเรื่อง"); 
+      }
+
       // log การ assign
       await IssueLogModel.createIssueLog(
         adminId,
         id,
         "assign",     // action
-        null,         // status
+        shouldUpdateStatus ? "รอรับเรื่อง" : null,  // status
         null, null,   // ongoing_at, end_at
         false,        // has_images
         `มอบหมายให้หน่วยงาน ${departmentName}`

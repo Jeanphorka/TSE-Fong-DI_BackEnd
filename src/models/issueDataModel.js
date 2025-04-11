@@ -9,6 +9,8 @@ async function getAllIssuesWithDetails() {
       i.status,
       i.created_at,
       i.updated_at,
+      i.review,
+      i.comment
       
       -- Reporter Info
       u.id as reporter_id,
@@ -28,6 +30,8 @@ async function getAllIssuesWithDetails() {
       l.building,
       l.floor,
       l.room
+
+
 
     FROM issues i
     LEFT JOIN users u ON i.reporter_id = u.id

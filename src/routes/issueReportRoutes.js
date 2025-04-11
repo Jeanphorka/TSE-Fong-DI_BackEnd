@@ -67,6 +67,14 @@ const authMiddleware = require("../middlewares/authMiddleware");
  *                     type: string
  *                     format: date-time
  *                     example: "2025-03-01T09:35:15.181Z"
+ *                   review:
+ *                     type: string
+ *                     format: double
+ *                     example: "4.5"
+ *                   comment:
+ *                     type: string
+ *                     format: double
+ *                     example: "ทำงารวมเร็วมากค่ะ"
  *                   images:
  *                     type: array
  *                     description: "รวมรูปภาพทั้งหมดที่เกี่ยวข้องกับปัญหานี้"
@@ -150,6 +158,14 @@ router.get("/", authMiddleware, IssueReportController.getUserIssues);
  *                   type: string
  *                   format: date-time
  *                   example: "2025-03-02T07:38:27.912Z"
+ *                 review:
+ *                   type: string
+ *                   format: double
+ *                   example: "4.5"
+ *                 comment:
+ *                   type: string
+ *                   format: double
+ *                   example: "ทำงารวดเร็วมากค่ะ"
  *                 images:
  *                   type: array
  *                   items:

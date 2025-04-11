@@ -109,6 +109,8 @@ const IssueReportModel = {
             loc.room,      
             ir.created_at, 
             ir.updated_at,
+            ir.review,
+            ir.comment,
 
             COALESCE(jsonb_agg(
                 jsonb_build_object(
@@ -146,7 +148,7 @@ const IssueReportModel = {
         WHERE ir.reporter_id = $1
         GROUP BY ir.id, ir.transaction_id, u.username, ir.description,  
                 ic.category_name, ir.status, loc.building, loc.floor, 
-                loc.room, ir.created_at, ir.updated_at
+                loc.room, ir.created_at, ir.updated_at, ir.review, ir.comment
         ORDER BY ir.created_at DESC;
         `;
 
@@ -173,6 +175,8 @@ const IssueReportModel = {
           loc.room,      
           ir.created_at, 
           ir.updated_at,
+          ir.review,
+          ir.comment,
 
           COALESCE(jsonb_agg(
               jsonb_build_object(
@@ -210,7 +214,7 @@ const IssueReportModel = {
       WHERE ir.id = $1
       GROUP BY ir.id, ir.transaction_id, ir.reporter_id, u.username, ir.description,  
               ic.category_name, ir.status, loc.building, loc.floor, 
-              loc.room, ir.created_at, ir.updated_at
+              loc.room, ir.created_at, ir.updated_at, ir.review, ir.comment
       ORDER BY ir.created_at DESC;
       `;
 

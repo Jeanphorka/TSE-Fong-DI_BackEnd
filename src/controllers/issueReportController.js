@@ -105,8 +105,10 @@ const IssueReportController = {
       const isOwner = String(issue.reporter_id) === String(userId);
       const isAdmin = role === "admin";
       const isAgent = role === "agent";
+      const isDean = role === "รองคณบดี";
 
-      if (!isOwner && !isAdmin && !isAgent) {
+        
+      if (!isOwner && !isAdmin && !isAgent && !isDean) {
         return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this issue" });
       }
 

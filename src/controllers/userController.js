@@ -6,13 +6,14 @@ const UserController = {
           const role = req.user?.role;
           const adminId = req.user?.userId; // ดึง `adminId` จาก Token
           const isAdmin = role === "admin";
-          
+          const isDean = role === "รองคณบดี";
+
           if (!adminId) {
             return res.status(401).json({ error: "Unauthorized", message: "Admin ID is missing" });
           }
 
-          if (!isAdmin) {
-            return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this " });
+          if (!isAdmin  && !isDean ) {
+            return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this user" });
           }
           const result = await UserModel.getAllUsers();
           const users = result.rows.map((row) => ({
@@ -39,15 +40,15 @@ const UserController = {
       const role1 = req.user?.role;
       const adminId = req.user?.userId; // ดึง `adminId` จาก Token
       const isAdmin = role1 === "admin";
-      
+      const isDean = role === "รองคณบดี";
 
-      if (!adminId) {
-        return res.status(401).json({ error: "Unauthorized", message: "Admin ID is missing" });
-      }
+        if (!adminId) {
+          return res.status(401).json({ error: "Unauthorized", message: "Admin ID is missing" });
+        }
 
-      if (!isAdmin) {
-        return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this " });
-      }
+        if (!isAdmin  && !isDean ) {
+          return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this user" });
+        }
 
       if (!username || !fullName || !role) {
         return res.status(400).json({ error: 'กรุณากรอกข้อมูลให้ครบถ้วน' });
@@ -73,15 +74,15 @@ const UserController = {
       const role1 = req.user?.role1;
       const adminId = req.user?.userId; // ดึง `adminId` จาก Token
       const isAdmin = role1 === "admin";
-      
+      const isDean = role === "รองคณบดี";
 
-      if (!adminId) {
-        return res.status(401).json({ error: "Unauthorized", message: "Admin ID is missing" });
-      }
+        if (!adminId) {
+          return res.status(401).json({ error: "Unauthorized", message: "Admin ID is missing" });
+        }
 
-      if (!isAdmin) {
-        return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this " });
-      }
+        if (!isAdmin && !isDean ) {
+          return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this user" });
+        }
       await UserModel.updateUser(id, username, fullName, role, departmentId);
       res.status(200).json({ message: 'อัปเดตผู้ใช้สำเร็จ' });
     } catch (err) {
@@ -96,15 +97,15 @@ const UserController = {
       const role = req.user?.role;
       const adminId = req.user?.userId; // ดึง `adminId` จาก Token
       const isAdmin = role === "admin";
-      
-  
-      if (!adminId) {
-        return res.status(401).json({ error: "Unauthorized", message: "Admin ID is missing" });
-      }
-  
-      if (!isAdmin) {
-        return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this " });
-      }
+      const isDean = role === "รองคณบดี";
+
+        if (!adminId) {
+          return res.status(401).json({ error: "Unauthorized", message: "Admin ID is missing" });
+        }
+
+        if (!isAdmin && !isDean ) {
+          return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this user" });
+        }
       const result = await UserModel.getUserById(id);
       if (result.rows.length === 0) {
         return res.status(404).json({ error: 'ไม่พบผู้ใช้' });
@@ -122,15 +123,15 @@ const UserController = {
       const role = req.user?.role;
       const adminId = req.user?.userId; // ดึง `adminId` จาก Token
       const isAdmin = role === "admin";
-      
+      const isDean = role === "รองคณบดี";
 
-      if (!adminId) {
-        return res.status(401).json({ error: "Unauthorized", message: "Admin ID is missing" });
-      }
+        if (!adminId) {
+          return res.status(401).json({ error: "Unauthorized", message: "Admin ID is missing" });
+        }
 
-      if (!isAdmin) {
-        return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this " });
-      }
+        if (!isAdmin  && !isDean ) {
+          return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this user" });
+        }
 
       if (isNaN(id)) {
         return res.status(400).json({ error: 'รหัสผู้ใช้ไม่ถูกต้อง' });

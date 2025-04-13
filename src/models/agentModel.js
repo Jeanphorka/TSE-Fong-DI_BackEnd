@@ -30,6 +30,7 @@ const AgentModel = {
         d.id AS department_id,
         d.name AS department_name,
         i.review,
+        i.comment,
         i.closed
       FROM public.issues i
       LEFT JOIN public.issue_log il ON i.id = il.issue_id
@@ -39,7 +40,7 @@ const AgentModel = {
       LEFT JOIN departments d ON i.assigned_to = d.id
       WHERE i.assigned_to = $1
         AND il.status = 'รอรับเรื่อง'
-      GROUP BY i.id, i.transaction_id, i.created_at, il.endat, l.building, l.floor, l.room, ic.category_name, i.description, i.status, d.id, d.name, i.review, i.closed
+      GROUP BY i.id, i.transaction_id, i.created_at, il.endat, l.building, l.floor, l.room, ic.category_name, i.description, i.status, d.id, d.name, i.review, i.comment, i.closed
       ORDER BY i.id ASC;
     `;
     return db.query(query, [departmentId]);

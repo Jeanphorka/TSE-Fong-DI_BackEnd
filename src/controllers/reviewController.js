@@ -31,6 +31,17 @@ const ReviewController = {
 
     if (review >= 3) {
       const closed = await specialModel.closeSpecialCase(id);
+
+      await IssueLogModel.createIssueLog(
+        userId,
+        id,
+        "review-close",
+        "Closed",
+        null,
+        null,
+        false,
+        "ปิดเคส"
+      );
     }
 
 

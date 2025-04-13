@@ -12,7 +12,7 @@ const UserController = {
             return res.status(401).json({ error: "Unauthorized", message: "Admin ID is missing" });
           }
 
-          if (!isAdmin  && !isDean ) {
+          if (!isAdmin  && !isDean) {
             return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this user" });
           }
           const result = await UserModel.getAllUsers();
@@ -71,10 +71,10 @@ const UserController = {
     const { username, fullName, role, departmentId } = req.body;
 
     try {
-      const role1 = req.user?.role1;
+      const role1 = req.user?.role;
       const adminId = req.user?.userId; // ดึง `adminId` จาก Token
       const isAdmin = role1 === "admin";
-      const isDean = role === "รองคณบดี";
+      const isDean = role1 === "รองคณบดี";
 
         if (!adminId) {
           return res.status(401).json({ error: "Unauthorized", message: "Admin ID is missing" });

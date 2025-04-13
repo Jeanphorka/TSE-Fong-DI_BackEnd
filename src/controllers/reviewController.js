@@ -1,6 +1,8 @@
 const ReviewModel = require("../models/reviewModel");
 const IssueLogModel = require("../models/issueLogModel");
 const IssueReportModel = require("../models/issueReportModel");
+const specialModel = require("../models/specialModels");
+
 
 
 const ReviewController = {
@@ -27,7 +29,10 @@ const ReviewController = {
       return res.status(400).json({ error: "กรุณาระบุคะแนนรีวิวระหว่าง 1 ถึง 5" });
     }
 
-    
+    if (review >= 3) {
+      const closed = await specialModel.closeSpecialCase(id);
+    }
+
 
     await IssueLogModel.createIssueLog(
         req.user.userId,

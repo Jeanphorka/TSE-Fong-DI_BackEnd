@@ -23,7 +23,7 @@ const getAllReports = async () => {
           d.name as department_name,
           i.review,
           i.comment,
-          i.closed,
+          i.closed
         FROM public.issues i
         LEFT JOIN public.issue_log il ON i.id = il.issue_id
         LEFT JOIN public.issue_image ii ON i.id = ii.issue_id AND ii.issue_log_id = il.id

@@ -9,8 +9,13 @@ async function getAllIssuesWithDetails() {
       i.status,
       i.created_at,
       i.updated_at,
+      (
+          SELECT MAX(il2.endat) 
+          FROM public.issue_log il2 
+          WHERE il2.issue_id = i.id
+      ) AS endat, 
       i.review,
-      i.comment
+      i.comment,
       
       -- Reporter Info
       u.id as reporter_id,

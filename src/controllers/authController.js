@@ -61,7 +61,7 @@ exports.login = async (req, res) => {
     }
 
     if (data.faculty !== 'คณะวิศวกรรมศาสตร์') {
-      return res.status(403).json({ message: 'อนุญาตเฉพาะนักศึกษาคณะวิศวกรรมศาสตร์เท่านั้น' });
+      return res.status(403).json({ message: 'อนุญาตเฉพาะนักศึกษาคณะวิศวกรรมศาสตร์และบุคลากรเท่านั้น' });
     }
 
     // ตรวจสอบว่ามี user อยู่ในระบบหรือยัง
@@ -95,6 +95,6 @@ exports.login = async (req, res) => {
 
   } catch (error) {
     console.error('Login failed:', error.message);
-    return res.status(500).json({ message: 'เกิดข้อผิดพลาดระหว่างเข้าสู่ระบบ', error: error.message });
+    return res.status(500).json({ message: 'เข้าสู่ระบบล้มเหลว', error: error.message });
   }
 };

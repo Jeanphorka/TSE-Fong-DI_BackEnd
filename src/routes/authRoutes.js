@@ -7,8 +7,12 @@ const authController = require('../controllers/authController');
  * @swagger
  * /api/auth/login:
  *   post:
- *     summary: Login to the system
- *     description: Authenticate a user and receive a JWT token.
+ *     summary: เข้าสู่ระบบด้วยบัญชีของมหาวิทยาลัยธรรมศาสตร์
+ *     description: |
+ *       ใช้สำหรับให้นักศึกษาคณะวิศวกรรมศาสตร์เข้าสู่ระบบผ่านระบบยืนยันตัวตนของมหาวิทยาลัยธรรมศาสตร์ (TU API)  
+ *       ✅ ต้องแนบ `Application-Key` ผ่าน Header เพื่อเรียกใช้งาน API  
+ *       ✅ อนุญาตเฉพาะผู้ใช้ที่อยู่ใน "คณะวิศวกรรมศาสตร์" เท่านั้น  
+ *       หากเข้าสู่ระบบสำเร็จ ระบบจะออก JWT token สำหรับใช้งานในระบบต่อไป
  *     tags:
  *       - Authentication
  *     requestBody:
@@ -18,18 +22,20 @@ const authController = require('../controllers/authController');
  *           schema:
  *             type: object
  *             required:
- *               - username
- *               - password
+ *               - UserName
+ *               - PassWord
  *             properties:
- *               username:
+ *               UserName:
  *                 type: string
  *                 example: "6510742643"
- *               password:
+ *                 description: รหัสนักศึกษา
+ *               PassWord:
  *                 type: string
- *                 example: "1234"
+ *                 example: "12345678911"
+ *                 description: รหัสผ่านบัญชีมหาวิทยาลัย
  *     responses:
  *       200:
- *         description: Login successful, returns a token.
+ *         description: เข้าสู่ระบบสำเร็จ พร้อมส่ง token กลับมา
  *         content:
  *           application/json:
  *             schema:
@@ -37,52 +43,33 @@ const authController = require('../controllers/authController');
  *               properties:
  *                 message:
  *                   type: string
+ *                   example: เข้าสู่ระบบสำเร็จ
  *                 token:
  *                   type: string
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     username:
+ *                       type: string
+ *                     full_name:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *                     faculty:
+ *                       type: string
+ *                     department:
+ *                       type: string
  *       400:
- *         description: Missing username or password.
+ *         description: ขาด username หรือ password
  *       401:
- *         description: Invalid username or password.
+ *         description: รหัสผ่านไม่ถูกต้อง หรือไม่สามารถยืนยันตัวตนได้
+ *       403:
+ *         description: ไม่อนุญาตให้ผู้ใช้นอกคณะวิศวกรรมศาสตร์เข้าสู่ระบบ
  */
 router.post('/login', authController.login);
 
-/**
- * @swagger
- * /api/auth/createUser:
- *   post:
- *     summary: Create a new user
- *     description: Add a new user to the system.
- *     tags:
- *       - Authentication
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - username
- *               - password
- *               - full_name
- *             properties:
- *               username:
- *                 type: string
- *                 example: "6510742643"
- *               password:
- *                 type: string
- *                 example: "1234"
- *               full_name:
- *                 type: string
- *                 example: "Tse Fong-Di"
- *     responses:
- *       201:
- *         description: User created successfully.
- *       400:
- *         description: Missing required fields.
- *       500:
- *         description: Failed to create user.
- */
-router.post('/createUser', authController.createUser);
+
+
 
 
 module.exports = router;

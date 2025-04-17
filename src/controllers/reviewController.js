@@ -2,7 +2,7 @@ const ReviewModel = require("../models/reviewModel");
 const IssueLogModel = require("../models/issueLogModel");
 const IssueReportModel = require("../models/issueReportModel");
 const specialModel = require("../models/specialModels");
-
+const actionAdminModel = require("../models/actionAdminModel");
 
 
 const ReviewController = {
@@ -29,6 +29,17 @@ const ReviewController = {
       return res.status(400).json({ error: "กรุณาระบุคะแนนรีวิวระหว่าง 1 ถึง 5" });
     }
 
+    await IssueLogModel.createIssueLog(
+      req.user.userId,
+      req.params.id,
+      "review",
+      null,
+      null,
+      null,
+      false,
+      `รีวิวคะแนน ${req.body.review} - ${req.body.comment || "ไม่มีความคิดเห็น"}`
+    );
+
     if (review >= 3) {
       const closed = await specialModel.closeSpecialCase(id);
 
@@ -42,19 +53,20 @@ const ReviewController = {
         false,
         "ปิดเคส"
       );
-    }
+    }else if (review < 3) {
+      const updatedIssue = await actionAdminModel.updateIssue(id, "รอพิจารณา");
 
-
-    await IssueLogModel.createIssueLog(
-        req.user.userId,
-        req.params.id,
-        "review",
-        null,
+      await IssueLogModel.createIssueLog(
+        userId,
+        id,
+        "review-open",
+        "รอพิจารณา",
         null,
         null,
         false,
-        `รีวิวคะแนน ${req.body.review} - ${req.body.comment || "ไม่มีความคิดเห็น"}`
+        "รอพิจารณาเคสจากรีวิวต่ำ"
       );
+    }
 
       const updated = await ReviewModel.saveReview(id, review, comment);
       res.status(200).json({ message: "บันทึกรีวิวสำเร็จ", updated });

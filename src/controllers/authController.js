@@ -34,7 +34,7 @@ exports.login = async (req, res) => {
         return res.status(401).json({ message: 'เข้าสู่ระบบล้มเหลว รหัสหรือรหัสผ่านไม่ถูกต้อง' });
       }
 
-      if (data.faculty !== 'คณะวิศวกรรมศาสตร์' || data.Faculty_Name_Th !== 'คณะวิศวกรรมศาสตร์') {
+      if (data.faculty !== 'คณะวิศวกรรมศาสตร์' || data.type !== 'employee') {
         return res.status(403).json({ message: 'อนุญาตเฉพาะนักศึกษาและบุคลากรคณะวิศวกรรมศาสตร์เท่านั้น' });
       }
   

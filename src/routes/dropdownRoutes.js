@@ -192,6 +192,9 @@ router.get("/rooms", DropdownController.getRooms);
  *                       issue_name:
  *                         type: string
  *                         example: "อุปกรณ์ชำรุด"
+ *                       problem_id: 
+ *                         type: string
+ *                         example: 1
  *       400:
  *         description: |
  *           ❌ ข้อผิดพลาด: ไม่ได้ส่ง `location_id` หรือ `building`

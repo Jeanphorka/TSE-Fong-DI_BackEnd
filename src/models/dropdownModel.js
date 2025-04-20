@@ -39,7 +39,7 @@ const DropdownModel = {
   // ดึงปัญหาตามประเภทห้อง
   getIssuesByRoomType: (roomTypeId, callback) => {
     db.query(
-      "SELECT i.category_name FROM issue_categories i JOIN issue_room_type irt ON i.id = irt.issue_id WHERE irt.room_type_id = $1",
+      "SELECT i.category_name, i.id AS problem_id FROM issue_categories i JOIN issue_room_type irt ON i.id = irt.issue_id WHERE irt.room_type_id = $1",
       [roomTypeId], callback);
   }
 };

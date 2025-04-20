@@ -173,7 +173,9 @@ const IssueReportModel = {
           ir.status,  
           loc.building,  
           loc.floor,     
-          loc.room,      
+          loc.room,
+          ir.assigned_to,
+          d.name AS department_name,      
           ir.created_at, 
           ir.updated_at,
           ir.review,
@@ -213,10 +215,11 @@ const IssueReportModel = {
       LEFT JOIN users u ON ir.reporter_id = u.id
       LEFT JOIN locations loc ON ir.location_id = loc.id
       LEFT JOIN issue_log il ON ir.id = il.issue_id
+      LEFT JOIN departments d ON ir.assigned_to = d.id
       WHERE ir.id = $1
       GROUP BY ir.id, ir.transaction_id, ir.reporter_id, u.username, ir.description,  
               ic.category_name, ir.status, loc.building, loc.floor, 
-              loc.room, ir.created_at, ir.updated_at, ir.review, ir.comment , ir.closed
+              loc.room, ir.assigned_to, d.name, ir.created_at, ir.updated_at, ir.review, ir.comment , ir.closed
       ORDER BY ir.created_at DESC;
       `;
 

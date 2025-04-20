@@ -1,6 +1,8 @@
 const { upload, deleteFileFromS3 } = require("../middlewares/uploadMiddleware");
 const IssueReportModel = require("../models/issueReportModel");
 const IssueLogModel = require("../models/issueLogModel");
+const { notifyAgents } = require('../controllers/notifyController');
+
 
 const IssueReportController = {
   createIssueReport: [
@@ -41,6 +43,16 @@ const IssueReportController = {
         if (imageUrls.length > 0) {
           uploadedImages = await IssueReportModel.uploadIssueImages(issue.id, logEntry.id, reporter_id, imageUrls);
         }
+        const fullIssue = await IssueReportModel.getIssueById(issue.id);
+        
+        // ส่งการแจ้งเตือนให้กับเจ้าหน้าที่ที่รับผิดชอบ
+        await notifyAgents(fullIssue.assigned_to, {
+          transaction_id: fullIssue.transaction_id,
+          title: fullIssue.title,                     // category_name
+          description: fullIssue.description,
+          location: `${fullIssue.building} ชั้น ${fullIssue.floor ?? ""} ห้อง ${fullIssue.room ?? ""}`,
+          departmentName: fullIssue.department_name   // ถ้ายังไม่มี เพิ่มใน SELECT ด้วย
+        });
 
         res.status(201).json({
           message: "Issue reported successfully",

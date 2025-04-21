@@ -43,9 +43,9 @@ const IssueReportController = {
         if (imageUrls.length > 0) {
           uploadedImages = await IssueReportModel.uploadIssueImages(issue.id, logEntry.id, reporter_id, imageUrls);
         }
-        const fullIssue = await IssueReportModel.getIssueById(issue.id);
         
         // ส่งการแจ้งเตือนให้กับเจ้าหน้าที่ที่รับผิดชอบ
+        const fullIssue = await IssueReportModel.getIssueById(issue.id);
         await notifyAgents(fullIssue.assigned_to, {
           transaction_id: fullIssue.transaction_id,
           title: fullIssue.title,                     // category_name

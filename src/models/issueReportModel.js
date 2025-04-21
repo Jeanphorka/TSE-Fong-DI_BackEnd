@@ -32,7 +32,7 @@ const IssueReportModel = {
 
         // 3. หา area_id ที่ตรงกับชื่ออาคาร
         const areaRes = await client.query(
-          'SELECT id FROM areas WHERE name ILIKE $1 LIMIT 1',
+          `SELECT id FROM areas WHERE name ILIKE $1 OR name ILIKE 'ลานจอดรถ%' LIMIT 1`,
           [`%${building}%`]
         );
 

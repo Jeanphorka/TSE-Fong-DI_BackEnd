@@ -3,12 +3,12 @@ const db = require("../../config/db");
 const DropdownModel = {
   // ดึงรายการอาคารทั้งหมด (Distinct)
   getBuildings: (callback) => {
-    db.query("SELECT DISTINCT building FROM locations", callback);
+    db.query("SELECT building FROM locations GROUP BY building ORDER BY MIN(id) ASC ", callback);
   },
 
   // ดึงรายการชั้น ตามอาคารที่เลือก
   getFloorsByBuilding: (building, callback) => {
-    db.query("SELECT DISTINCT floor FROM locations WHERE building = $1", 
+    db.query("SELECT floor FROM locations WHERE building = $1 GROUP BY floor ORDER BY floor ASC ", 
       [building], callback);
   },
 

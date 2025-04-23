@@ -133,44 +133,84 @@ router.get("/", authMiddleware, IssueReportController.getUserIssues);
  *               type: object
  *               properties:
  *                 id:
- *                   type: integer
- *                   example: 1
+ *                   type: string
+ *                   example: "20"
  *                 transaction_id:
  *                   type: string
- *                   example: "IS-02032025-0001"
+ *                   example: "IS-21042025-0020"
  *                 reporter_id:
- *                   type: integer
- *                   example: 65107420000
+ *                   type: string
+ *                   example: "9"
  *                 username:
  *                   type: string
- *                   example: "JohnDoe"
+ *                   example: "6510742643"
  *                 description:
  *                   type: string
- *                   example: "ไฟไม่ติดในห้องเรียน"
+ *                   example: "Test"
+ *                 title:
+ *                   type: string
+ *                   example: "ความสะอาด"
  *                 status:
  *                   type: string
- *                   example: "กำลังดำเนินการ"
+ *                   example: "Reopened"
+ *                 building:
+ *                   type: string
+ *                   example: "ตึกอำนวยการ"
+ *                 floor:
+ *                   type: string
+ *                   example: "1"
+ *                 room:
+ *                   type: string
+ *                   example: "Coffee Shop"
+ *                 assigned_to:
+ *                   type: string
+ *                   example: "9"
+ *                 department_name:
+ *                   type: string
+ *                   example: "งานบริหารอาคารและสถานที่ฯ"
  *                 created_at:
  *                   type: string
  *                   format: date-time
- *                   example: "2025-03-02T07:35:33.685Z"
+ *                   example: "2025-04-21T07:14:42.389Z"
  *                 updated_at:
  *                   type: string
  *                   format: date-time
- *                   example: "2025-03-02T07:38:27.912Z"
+ *                   example: "2025-04-21T16:09:49.116Z"
  *                 review:
- *                   type: string
+ *                   type: number
  *                   format: double
- *                   example: "4.5"
+ *                   nullable: true
+ *                   example: null
  *                 comment:
  *                   type: string
- *                   format: double
- *                   example: "ทำงารวดเร็วมากค่ะ"
- *                 images:
+ *                   nullable: true
+ *                   example: null
+ *                 closed:
+ *                   type: boolean
+ *                   example: false
+ *                 status_updates:
  *                   type: array
  *                   items:
- *                     type: string
- *                     example: "https://fongdi.s3.ap-southeast-2.amazonaws.com/uploads/1740900932259-289440134.jpg"
+ *                     type: object
+ *                     properties:
+ *                       images:
+ *                         type: array
+ *                         items:
+ *                           type: string
+ *                           example: "https://fongdi.s3.ap-southeast-2.amazonaws.com/uploads/1745219677146-370076038.jpg"
+ *                       status:
+ *                         type: string
+ *                         example: "รอรับเรื่อง"
+ *                       updated_at:
+ *                         type: string
+ *                         format: date-time
+ *                         example: "2025-04-21T07:14:42.389337+00:00"
+ *                       updated_by:
+ *                         type: string
+ *                         example: "อชิรญา พ่อค้า"
+ *                       description:
+ *                         type: string
+ *                         example: "Test"
  *       400:
  *         description: "Bad Request - ID ไม่ถูกต้อง"
  *       401:

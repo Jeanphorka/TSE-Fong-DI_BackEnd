@@ -1,4 +1,4 @@
-const { upload, deleteFileFromS3 } = require("../middlewares/uploadMiddleware");
+const { upload } = require("../middlewares/uploadMiddleware");
 const IssueReportModel = require("../models/issueReportModel");
 const IssueLogModel = require("../models/issueLogModel");
 const { notifyAgents } = require('../controllers/notifyController');

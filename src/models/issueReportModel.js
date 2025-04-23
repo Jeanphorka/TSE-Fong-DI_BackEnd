@@ -196,6 +196,9 @@ const IssueReportModel = {
                         WHEN il.status = 'เสร็จสิ้น' THEN il.endat
                         ELSE ir.created_at
                     END,
+                  'updated_by', (SELECT full_name 
+                      FROM users ul
+                      WHERE ul.id = il.user_id),
                   'images', 
                       (SELECT COALESCE(jsonb_agg(ii.file_url), '[]') 
                       FROM issue_image ii 
@@ -216,6 +219,7 @@ const IssueReportModel = {
       LEFT JOIN locations loc ON ir.location_id = loc.id
       LEFT JOIN issue_log il ON ir.id = il.issue_id
       LEFT JOIN departments d ON ir.assigned_to = d.id
+
       WHERE ir.id = $1
       GROUP BY ir.id, ir.transaction_id, ir.reporter_id, u.username, ir.description,  
               ic.category_name, ir.status, loc.building, loc.floor, 

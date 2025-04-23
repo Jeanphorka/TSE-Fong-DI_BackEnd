@@ -42,19 +42,12 @@ const ActionAdminModel = {
 
   deleteIssue: async (id) => {
     try {
-      // ลบรูปภาพที่เกี่ยวข้องก่อน
-      await pool.query(`DELETE FROM issue_image WHERE issue_id = $1`, [id]);
-
-      // เปลี่ยน `issue_id` ใน Log เป็น `NULL` 
-      await pool.query(`UPDATE issue_log SET issue_id = NULL WHERE issue_id = $1`, [id]);
-
-      // ลบ Issue จริง
-      await pool.query(`DELETE FROM issues WHERE id = $1`, [id]);
-
-      // รีเซ็ต sequence ให้วิ่งต่อจาก MAX(id)
-      await pool.query(
-        `SELECT setval('issues_new_id_seq', (SELECT COALESCE(MAX(id), 0) FROM issues), true);`
-    );
+      return await pool.query(`
+        UPDATE issues
+        SET deleted = true,
+            updated_at = NOW()
+        WHERE id = $1 RETURNING *;
+      `, [id]);
     } catch (error) {
       throw error;
     }

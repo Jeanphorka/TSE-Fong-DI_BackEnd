@@ -188,6 +188,9 @@ router.get("/", authMiddleware, IssueReportController.getUserIssues);
  *                 closed:
  *                   type: boolean
  *                   example: false
+ *                 deleted:
+ *                   type: boolean
+ *                   example: false
  *                 status_updates:
  *                   type: array
  *                   items:

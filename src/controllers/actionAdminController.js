@@ -138,12 +138,6 @@ const ActionAdminController = {
         return res.status(404).json({ error: "Issue not found" });
       }
 
-      const { rows: imageRows } = await actionAdminModel.getIssueImages(id);
-      
-      //ลบภาพใน S3
-      for (const row of imageRows) {
-        await deleteFileFromS3(row.file_url); 
-      }
 
       await IssueLogModel.createIssueLog(
         adminId,  // user_id (คนที่ลบ)
@@ -157,7 +151,7 @@ const ActionAdminController = {
         new Date().toISOString(),
       );
 
-      // ลบ Issue จากฐานข้อมูล
+      // set deleted = true
       await actionAdminModel.deleteIssue(id);
 
       res.status(200).json({ message: "Issue report deleted successfully" });

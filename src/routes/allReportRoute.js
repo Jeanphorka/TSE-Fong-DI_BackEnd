@@ -8,7 +8,7 @@ const authMiddleware = require('../middlewares/authMiddleware');
  * /api/all-issue:
  *   get:
  *     summary: ดึงข้อมูลรายงานทั้งหมด
- *     description: API สำหรับดึงข้อมูลรายงานที่มีสถานะ "รอรับเรื่อง" รวมถึงรายละเอียดที่เกี่ยวข้อง เช่น วันที่แจ้ง, รูปภาพ, สถานที่, และประเภทของปัญหา
+ *     description: API สำหรับดึงข้อมูลรายงานทั้งหมด พร้อมรายละเอียด เช่น สถานะ, รูปภาพ, สถานที่, ประเภทของปัญหา ฯลฯ
  *     tags: 
  *       - AllReports
  *     security:
@@ -30,37 +30,55 @@ const authMiddleware = require('../middlewares/authMiddleware');
  *                     type: object
  *                     properties:
  *                       id:
- *                         type: integer
- *                         example: 1
+ *                         type: string
+ *                         example: "1"
  *                       transaction_id:
  *                         type: string
  *                         example: "IS-02032025-0001"
  *                       created_at:
  *                         type: string
  *                         format: date-time
- *                         example: "2025-03-02T13:40:29.293127+07:00"
- *                       end_at:
+ *                         example: "2025-03-02T06:40:29.293Z"
+ *                       endat:
  *                         type: string
  *                         format: date-time
  *                         nullable: true
- *                         example: "2025-03-02T13:43:04.476474+07:00"
+ *                         example: "2025-03-02T06:43:04.476Z"
  *                       images:
  *                         type: array
  *                         items:
  *                           type: string
- *                           example: "https://yourdomain.com/uploads/image1.jpg"
+ *                           example: "https://fongdi.s3.ap-southeast-2.amazonaws.com/uploads/1740897628148-481866778.jpeg"
  *                       location:
  *                         type: string
- *                         example: "Building A Floor 3 Room 305"
+ *                         example: " "
  *                       category_name:
  *                         type: string
- *                         example: "ต้นไม้ล้ม"
+ *                         example: "ปัญหาเกี่ยวกับต้นไม้"
  *                       description:
  *                         type: string  
- *                         example: "ต้นไม้ล้มขวางทางโดนรถผม ขยับรถไม่ได้ครับ"              
+ *                         example: "ต้นไม้ล้มขวางทางโดนรถผม ขยับรถไม่ได้ครับ"
  *                       status:
  *                         type: string
- *                         example: "เสร็จสิ้น"
+ *                         example: "รอพิจารณา"
+ *                       department_id:
+ *                         type: integer
+ *                         example: 3
+ *                       department_name:
+ *                         type: string
+ *                         example: "งานบริการอาคารและสถานที่ฯ"
+ *                       review:
+ *                         type: string
+ *                         example: "2.5"
+ *                       comment:
+ *                         type: string
+ *                         example: "test"
+ *                       closed:
+ *                         type: boolean
+ *                         example: false
+ *                       deleted:
+ *                         type: boolean
+ *                         example: false
  *       500:
  *         description: เกิดข้อผิดพลาดภายในเซิร์ฟเวอร์
  *         content:
@@ -75,6 +93,7 @@ const authMiddleware = require('../middlewares/authMiddleware');
  *                   type: string
  *                   example: "Internal Server Error"
  */
+
 
 router.get("/", authMiddleware, getAllReportsController);
 

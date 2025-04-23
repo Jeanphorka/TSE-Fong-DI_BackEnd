@@ -181,6 +181,7 @@ const IssueReportModel = {
           ir.review,
           ir.comment,
           ir.closed,
+          ir.deleted,
 
           COALESCE(jsonb_agg(
               jsonb_build_object(
@@ -223,7 +224,7 @@ const IssueReportModel = {
       WHERE ir.id = $1
       GROUP BY ir.id, ir.transaction_id, ir.reporter_id, u.username, ir.description,  
               ic.category_name, ir.status, loc.building, loc.floor, 
-              loc.room, ir.assigned_to, d.name, ir.created_at, ir.updated_at, ir.review, ir.comment , ir.closed
+              loc.room, ir.assigned_to, d.name, ir.created_at, ir.updated_at, ir.review, ir.comment , ir.closed , ir.deleted
       ORDER BY ir.created_at DESC;
       `;
 

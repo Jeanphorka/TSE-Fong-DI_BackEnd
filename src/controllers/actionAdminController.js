@@ -1,6 +1,9 @@
 const { upload, deleteFileFromS3 } = require("../middlewares/uploadMiddleware");
 const actionAdminModel = require("../models/actionAdminModel");
 const IssueLogModel = require("../models/issueLogModel");
+const IssueReportModel = require("../models/issueReportModel");
+const { notifyAgents } = require('../controllers/notifyController');
+
 
 const ActionAdminController = {
   updateIssueStatus: [
@@ -112,20 +115,19 @@ const ActionAdminController = {
     
   ],
 
-  // ลบรายงาน
+  // ลบรายงาน แต่่เก็บไว้ในฐานข้อมูล
   deleteIssueReport: async (req, res) => {
     try {
       const { id } = req.params; // รับ `issue_id`
       const role = req.user?.role;
       const adminId = req.user?.userId; // ดึง `adminId` จาก Token
       const isAdmin = role === "admin";
-      const isDean = role === "รองคณบดี";
 
       if (!adminId) {
         return res.status(401).json({ error: "Unauthorized", message: "Admin ID is missing" });
       }
 
-      if (!isAdmin && !isAgent && !isDean ) {
+      if (!isAdmin) {
         return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this issue" });
       }
 
@@ -178,7 +180,7 @@ const ActionAdminController = {
         return res.status(401).json({ error: "Unauthorized", message: "Admin ID is missing" });
       }
 
-      if (!isAdmin && !isAgent && !isDean ) {
+      if (!isAdmin && !isDean ) {
         return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this issue" });
       }
   
@@ -210,6 +212,20 @@ const ActionAdminController = {
 
       // อัปเดต assign_to
       await actionAdminModel.updateDepartment(id, department_id);
+
+      // ส่งการแจ้งเตือนให้กับเจ้าหน้าที่ที่รับผิดชอบ
+      const fullIssue = await IssueReportModel.getIssueById(id);
+      await notifyAgents(
+        fullIssue.assigned_to,
+        {
+          transaction_id: fullIssue.transaction_id,
+          title: fullIssue.title, // category_name
+          description: fullIssue.description,
+          location: `อาคาร ${fullIssue.building} ชั้น ${fullIssue.floor ?? ""} ห้อง ${fullIssue.room ?? ""}`,
+          departmentName: fullIssue.department_name
+        },
+        "assign" // <<< เพิ่มโหมด assign
+      );
 
       if (shouldUpdateStatus) {
         await actionAdminModel.updateIssue(id, "รอรับเรื่อง"); 

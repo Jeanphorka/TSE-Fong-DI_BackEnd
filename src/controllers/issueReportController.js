@@ -46,14 +46,17 @@ const IssueReportController = {
         
         // ส่งการแจ้งเตือนให้กับเจ้าหน้าที่ที่รับผิดชอบ
         const fullIssue = await IssueReportModel.getIssueById(issue.id);
-        await notifyAgents(fullIssue.assigned_to, {
-          transaction_id: fullIssue.transaction_id,
-          title: fullIssue.title,                     // category_name
-          description: fullIssue.description,
-          location: `${fullIssue.building} ชั้น ${fullIssue.floor ?? ""} ห้อง ${fullIssue.room ?? ""}`,
-          departmentName: fullIssue.department_name   // ถ้ายังไม่มี เพิ่มใน SELECT ด้วย
-        });
-
+        await notifyAgents(
+          fullIssue.assigned_to,
+          {
+            transaction_id: fullIssue.transaction_id,
+            title: fullIssue.title, // category_name
+            description: fullIssue.description,
+            location: `อาคาร ${fullIssue.building} ชั้น ${fullIssue.floor ?? ""} ห้อง ${fullIssue.room ?? ""}`,
+            departmentName: fullIssue.department_name
+          },
+          "new" //เพิ่มโหมด 
+        );
         res.status(201).json({
           message: "Issue reported successfully",
           report: {

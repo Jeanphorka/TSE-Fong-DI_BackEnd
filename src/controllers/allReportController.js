@@ -6,12 +6,13 @@ const getAllReportsController = async (req, res) => {
     const adminId = req.user?.userId; // ดึง `adminId` จาก Token
     const isAdmin = role === "admin";
     const isDean = role === "รองคณบดี";
+    const isSuper = role === "superadmin";
 
     if (!adminId) {
       return res.status(401).json({ error: "Unauthorized", message: "Admin ID is missing" });
     }
 
-    if (!isAdmin && !isDean ) {
+    if (!isAdmin && !isDean && !isSuper) {
       return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this issue" });
     }
     const reports = await getAllReports();

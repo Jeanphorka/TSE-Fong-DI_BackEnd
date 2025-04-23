@@ -5,13 +5,13 @@ const DepartmentController = {
     const { name, areaIds, issueTypeIds } = req.body;
     const role = req.user?.role;
     const adminId = req.user?.userId; // ดึง `adminId` จาก Token
-    const isAdmin = role === "admin";
+    const isSuper = role === "superadmin";
 
         if (!adminId) {
           return res.status(401).json({ error: "Unauthorized", message: "Admin ID is missing" });
         }
 
-        if (!isAdmin) {
+        if (!isSuper) {
           return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this department" });
         }
 
@@ -60,13 +60,13 @@ const DepartmentController = {
     const { name, areaIds, issueTypeIds } = req.body;
     const role = req.user?.role;
     const adminId = req.user?.userId; // ดึง `adminId` จาก Token
-    const isAdmin = role === "admin";
+    const isSuper = role === "superadmin";
 
       if (!adminId) {
         return res.status(401).json({ error: "Unauthorized", message: "Admin ID is missing" });
       }
 
-      if (!isAdmin) {
+      if (!isSuper) {
         return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this department" });
       }
   
@@ -120,13 +120,13 @@ const DepartmentController = {
     try {
       const role = req.user?.role;
       const adminId = req.user?.userId; // ดึง `adminId` จาก Token
-      const isAdmin = role === "admin";
+      const isSuper = role === "superadmin";
 
         if (!adminId) {
           return res.status(401).json({ error: "Unauthorized", message: "Admin ID is missing" });
         }
 
-        if (!isAdmin ) {
+        if (!isSuper ) {
           return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this department" });
         }
     
@@ -144,13 +144,13 @@ const DepartmentController = {
     try {
       const role = req.user?.role;
       const adminId = req.user?.userId; // ดึง `adminId` จาก Token
-      const isAdmin = role === "admin";
+      const isSuper = role === "superadmin";
 
         if (!adminId) {
           return res.status(401).json({ error: "Unauthorized", message: "Admin ID is missing" });
         }
 
-        if (!isAdmin) {
+        if (!isSuper) {
           return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this department" });
         }
 
@@ -175,13 +175,13 @@ const DepartmentController = {
       const rows = result.rows;
       const role = req.user?.role;
       const adminId = req.user?.userId; // ดึง `adminId` จาก Token
-      const isAdmin = role === "admin";
+      const isSuper = role === "superadmin";
 
         if (!adminId) {
           return res.status(401).json({ error: "Unauthorized", message: "Admin ID is missing" });
         }
 
-        if (!isAdmin) {
+        if (!isSuper) {
           return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this department" });
         }
   
@@ -225,13 +225,13 @@ const DepartmentController = {
       const rows = result.rows;
       const role = req.user?.role;
       const adminId = req.user?.userId; // ดึง `adminId` จาก Token
-      const isAdmin = role === "admin";
+      const isSuper = role === "superadmin";
 
         if (!adminId) {
           return res.status(401).json({ error: "Unauthorized", message: "Admin ID is missing" });
         }
 
-        if (!isAdmin) {
+        if (!isSuper) {
           return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this department" });
         }
 

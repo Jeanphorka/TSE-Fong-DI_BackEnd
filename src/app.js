@@ -10,6 +10,7 @@ const userRoutes = require('./routes/userRoutes');
 const agentRoutes = require('./routes/agentRoutes');
 const reviewRoutes = require("./routes/reviewRoutes");
 const specialRoutes = require("./routes/specialRoutes");
+const issueCategoryRoute = require('./routes/issueCategoryRoute');
 
 require('dotenv').config();
 
@@ -45,6 +46,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/agent', agentRoutes);
 app.use('/api/review', reviewRoutes);
 app.use("/api/special-action", specialRoutes);
+app.use('/api/issue-category', issueCategoryRoute);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {

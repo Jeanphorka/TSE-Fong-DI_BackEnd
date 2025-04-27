@@ -67,6 +67,15 @@ const ActionAdminModel = {
       [departmentId]
     );
     return result.rows[0];
+  },
+
+  updateDeleteFlag: (id, isDeleted) => {
+    const query = `
+      UPDATE issues
+      SET delete = $1
+      WHERE id = $2;
+    `;
+    return db.query(query, [isDeleted, id]);
   }
 };
 

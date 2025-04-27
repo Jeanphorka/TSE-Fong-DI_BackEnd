@@ -246,7 +246,39 @@ const ActionAdminController = {
       console.error("updateDepartment error:", error.message);
       res.status(500).json({ error: error.message });
     }
+  },
+
+  updateDeleteFlag: async (req, res) => {
+    const id = parseInt(req.params.id);
+    const { isDeleted } = req.body;
+    const role = req.user?.role;
+    const adminId = req.user?.userId; // ดึง `adminId` จาก Token
+    const isDean = role === "รองคณบดี";
+      
+
+    try {
+
+      if (!adminId) {
+        return res.status(401).json({ error: "Unauthorized", message: "Admin ID is missing" });
+      }
+
+      if (!isDean) {
+        return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this issue" });
+      }
+
+      if (isNaN(id) || typeof isDeleted !== 'boolean') {
+        return res.status(400).json({ error: 'ข้อมูลไม่ถูกต้อง' });
+      }
+
+      await IssueModel.updateDeleteFlag(id, isDeleted);
+
+      res.status(200).json({ message: 'อัปเดตสถานะลบสำเร็จ' });
+    } catch (err) {
+      console.error('❌ updateDeleteFlag error:', err.message);
+      res.status(500).json({ error: 'ไม่สามารถอัปเดตสถานะลบได้' });
+    }
   }
+
 
 };
 

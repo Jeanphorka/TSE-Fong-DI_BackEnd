@@ -178,4 +178,51 @@ router.delete('/delete/:id', authMiddleware, ActionAdminController.deleteIssueRe
  */
 router.put('/update-department/:id', authMiddleware, ActionAdminController.updateDepartment);
 
+/**
+ * @swagger
+ * /api/issues/update-delete/{id}:
+ *   put:
+ *     tags:
+ *       - ActionDean
+ *     summary: เปลี่ยนสถานะลบของปัญหา
+ *     description: อัปเดตฟิลด์ `delete` ของ issue โดยรับค่า `true` หรือ `false` ผ่าน request body
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: รหัสของ issue ที่ต้องการเปลี่ยนสถานะลบ
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               isDeleted:
+ *                 type: boolean
+ *                 example: false
+ *     responses:
+ *       200:
+ *         description: อัปเดตสถานะลบสำเร็จ
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "อัปเดตสถานะลบสำเร็จ"
+ *       400:
+ *         description: ข้อมูลไม่ถูกต้อง เช่น id ไม่ใช่ตัวเลข หรือค่า isDeleted ไม่ถูกต้อง
+ *       401:
+ *         description: ไม่มีสิทธิ์ใช้งาน
+ *       500:
+ *         description: ไม่สามารถอัปเดตข้อมูลได้เนื่องจากข้อผิดพลาดของเซิร์ฟเวอร์
+ */
+router.put('/update-delete/:id', authMiddleware, ActionAdminController.updateDeleteFlag);
+
 module.exports = router;

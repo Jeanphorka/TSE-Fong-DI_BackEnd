@@ -19,6 +19,23 @@ const UserModel = {
     `);
   },
 
+  getAgentUsers: () => {
+    return db.query(`
+      SELECT 
+        u.id, 
+        u.username, 
+        u.full_name, 
+        u.role, 
+        d.id AS department_id, 
+        d.name AS department_name
+      FROM users u
+      LEFT JOIN agents a ON u.id = a.user_id
+      LEFT JOIN departments d ON a.department_id = d.id
+      WHERE u.role = 'agent'
+      ORDER BY u.id ASC
+    `);
+  },
+
   createUser: async (username, fullName, role, departmentId) => {
     // 1. สร้าง password รูปแบบ Tse000X
     const countResult = await db.query(`SELECT COUNT(*) FROM users`);

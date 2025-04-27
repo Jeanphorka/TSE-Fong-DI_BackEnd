@@ -9,13 +9,15 @@ const authMiddleware = require("../middlewares/authMiddleware");
  *   get:
  *     tags:
  *       - Users
- *     summary: ดึงข้อมูลผู้ใช้ทั้งหมด
- *     description: แสดงเฉพาะผู้ใช้ที่มี role เป็น admin หรือ agent เท่านั้น
+ *     summary: ดึงข้อมูลผู้ใช้ทั้งหมดตามสิทธิ์
+ *     description: 
+ *       - ถ้าเป็น superadmin: สามารถดูผู้ใช้ได้ทุกตำแหน่ง
+ *       - ถ้าเป็น admin: สามารถดูเฉพาะผู้ใช้ที่มีตำแหน่งเป็น agent
  *     security:
  *       - BearerAuth: []
  *     responses:
  *       200:
- *         description: รายชื่อผู้ใช้ทั้งหมด
+ *         description: รายชื่อผู้ใช้ทั้งหมดตามสิทธิ์ที่ได้รับ
  *         content:
  *           application/json:
  *             schema:
@@ -40,6 +42,7 @@ const authMiddleware = require("../middlewares/authMiddleware");
  *                     type: string
  */
 router.get('/all', authMiddleware, UserController.getAllUsers);
+
 
 /**
  * @swagger

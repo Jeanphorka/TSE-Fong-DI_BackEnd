@@ -6,17 +6,26 @@ const UserController = {
           const role = req.user?.role;
           const adminId = req.user?.userId; // ดึง `adminId` จาก Token
           const isSuper = role === "superadmin";
+          const isAdmin = role === "admin";
           
 
           if (!adminId) {
             return res.status(401).json({ error: "Unauthorized", message: "Admin ID is missing" });
           }
 
-          if (!isSuper) {
+          if (!isSuper && !isAdmin) {
+            return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this page" });
+          }
+
+          let result;
+          if (role === "superadmin") {
+            result = await UserModel.getAllUsers(); // superadmin เห็นหมด
+          } else if (role === "admin") {
+            result = await UserModel.getAgentUsers(); // admin เห็นเฉพาะ agent
+          } else {
             return res.status(403).json({ error: "Forbidden", message: "You do not have permission to view this user" });
           }
           
-          const result = await UserModel.getAllUsers();
           const users = result.rows.map((row) => ({
             id: row.id,
             code: `Tse${row.id.toString().padStart(4, '0')}`, 

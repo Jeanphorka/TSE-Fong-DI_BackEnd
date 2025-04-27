@@ -60,7 +60,7 @@ exports.login = async (req, res) => {
       return res.status(401).json({ message: 'เข้าสู่ระบบล้มเหลว รหัสหรือรหัสผ่านไม่ถูกต้อง' });
     }
 
-    if (data.faculty !== 'คณะวิศวกรรมศาสตร์') {
+    if (data.faculty && data.faculty !== 'คณะวิศวกรรมศาสตร์') {
       return res.status(403).json({ message: 'อนุญาตเฉพาะนักศึกษาคณะวิศวกรรมศาสตร์และบุคลากรเท่านั้น' });
     }
 

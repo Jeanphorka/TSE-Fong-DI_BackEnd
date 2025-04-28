@@ -31,7 +31,8 @@ const AgentModel = {
         d.name AS department_name,
         i.review,
         i.comment,
-        i.closed
+        i.closed,
+        i.deleted
       FROM public.issues i
       LEFT JOIN public.issue_log il ON i.id = il.issue_id
       LEFT JOIN public.issue_image ii ON i.id = ii.issue_id AND ii.issue_log_id = il.id

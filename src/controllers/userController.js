@@ -49,7 +49,7 @@ const UserController = {
     try {
       const role1 = req.user?.role;
       const adminId = req.user?.userId; // ดึง `adminId` จาก Token
-      const isSuper = role === "superadmin";
+      const isSuper = role1 === "superadmin";
       
         if (!adminId) {
           return res.status(401).json({ error: "Unauthorized", message: "Admin ID is missing" });
@@ -82,7 +82,7 @@ const UserController = {
     try {
       const role1 = req.user?.role;
       const adminId = req.user?.userId; // ดึง `adminId` จาก Token
-      const isSuper = role === "superadmin";
+      const isSuper = role1 === "superadmin";
       
 
         if (!adminId) {

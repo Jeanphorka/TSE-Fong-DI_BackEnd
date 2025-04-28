@@ -2,7 +2,7 @@ const { upload, deleteFileFromS3 } = require("../middlewares/uploadMiddleware");
 const actionAdminModel = require("../models/actionAdminModel");
 const IssueLogModel = require("../models/issueLogModel");
 const IssueReportModel = require("../models/issueReportModel");
-const { notifyAgents } = require('../controllers/notifyController');
+const {notifyAgents , notifyAdmins} = require('../controllers/notifyController');
 
 
 const ActionAdminController = {
@@ -149,6 +149,18 @@ const ActionAdminController = {
         false,  // has_images = false
         null,  // comment = null
         new Date().toISOString(),
+      );
+
+      const fullIssue = await IssueReportModel.getIssueById(id);
+      await notifyAdmins(
+        {
+          transaction_id: fullIssue.transaction_id,
+          title: fullIssue.title, // category_name
+          description: fullIssue.description,
+          location: `อาคาร ${fullIssue.building} ชั้น ${fullIssue.floor ?? ""} ห้อง ${fullIssue.room ?? ""}`,
+          departmentName: fullIssue.department_name
+        },
+        "return" // <<< เพิ่มโหมด assign
       );
 
       // set deleted = true

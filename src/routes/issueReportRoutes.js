@@ -2,6 +2,13 @@ const express = require("express");
 const router = express.Router();
 const IssueReportController = require("../controllers/issueReportController");
 const authMiddleware = require("../middlewares/authMiddleware");
+const rateLimit = require("express-rate-limit");
+
+const reportLimiter = rateLimit({
+    windowMs: 15 * 1000, // 15 วินาที
+    max: 1, // อนุญาตแค่ 1 request ต่อช่วงเวลา
+    message: { error: "คุณส่งเร็วเกินไป โปรดรอสักครู่" }
+  });
 
 /**
  * @swagger
@@ -240,6 +247,7 @@ router.get("/:id", authMiddleware, IssueReportController.getIssueById);
  *       - **`transaction_id` จะถูกสร้างอัตโนมัติในรูปแบบ `IS-DDMMYYYY-XXXX`**
  *       - ✅ **ผู้ใช้ต้องล็อกอินก่อน และแนบ Token ใน Header**
  *       - ✅ **ตัวอย่าง Request Body**
+ *         
  *         ```json
  *         {
  *           "problem_id": 2,
@@ -311,8 +319,20 @@ router.get("/:id", authMiddleware, IssueReportController.getIssueById);
  *                       type: string
  *                       format: date-time
  *                       example: "2025-02-23T12:34:56.789Z"
+ *
+ *       400:
+ *         description: Missing required parameters.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Missing required parameters"
+ *
  *       401:
- *         description: Unauthorized (ต้องมี Token)
+ *         description: Unauthorized (ต้องมี Token).
  *         content:
  *           application/json:
  *             schema:
@@ -327,12 +347,33 @@ router.get("/:id", authMiddleware, IssueReportController.getIssueById);
  *                 solution:
  *                   type: string
  *                   example: "Please log in and include a valid Bearer token in the Authorization header."
- *       400:
- *         description: Missing required parameters
+ *
+ *       429:
+ *         description: Duplicate issue detected (ส่งข้อมูลซ้ำในเวลาสั้น ๆ).
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Duplicate issue detected"
+ *                 message:
+ *                   type: string
+ *                   example: "พบว่าท่านได้ส่งรายงานเดียวกันในช่วงเวลาอันใกล้ กรุณารอสักครู่ก่อนส่งใหม่อีกครั้ง"
+ *
  *       500:
- *         description: Internal Server Error
+ *         description: Internal Server Error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Internal Server Error"
  */
-router.post("/", authMiddleware, IssueReportController.createIssueReport);
+router.post("/", authMiddleware, reportLimiter, IssueReportController.createIssueReport);
 
 
 

@@ -2,18 +2,46 @@ const { upload } = require("../middlewares/uploadMiddleware");
 const IssueReportModel = require("../models/issueReportModel");
 const IssueLogModel = require("../models/issueLogModel");
 const { notifyAgents } = require('../controllers/notifyController');
+const pool = require('../../config/db'); 
 
 
 const IssueReportController = {
   createIssueReport: [
     upload.array("images", 5),  //ใช้ Middleware จัดการอัปโหลดรูปภาพ
     async (req, res) => {
+      const client = await pool.connect();
       try {
         const { problem_id, description, location_id } = req.body;
         const reporter_id = req.user?.userId;
 
         if (!reporter_id || !problem_id || !location_id) {
           return res.status(400).json({ error: "Missing required parameters" });
+        }
+
+        await client.query('BEGIN');
+
+        const lastIssue = await IssueReportModel.getLatestIssueByUser(reporter_id);
+
+        if (lastIssue) {
+          const now = new Date();
+          const lastTime = new Date(lastIssue.created_at);
+          const timeDiffSec = (now - lastTime) / 1000;
+        
+          // เช็คเวลาสร้างห่างกันน้อยกว่า 15 วินาที
+          if (timeDiffSec < 15) {
+            return res.status(429).json({
+              error: "คุณเพิ่งส่งรายงานเมื่อไม่กี่วินาทีที่แล้ว กรุณารอสักครู่ก่อนส่งอีกครั้ง"
+            });
+          }
+        }
+
+        const duplicate = await IssueReportModel.checkDuplicateIssue(reporter_id, problem_id, location_id, description);
+
+        if (duplicate) {
+          await client.query('ROLLBACK');
+          return res.status(429).json({
+            error: "พบว่าท่านได้ส่งรายงานเดียวกันในช่วงเวลาอันใกล้ ระบบได้รับรายงานของท่านแล้ว"
+          });
         }
         
         // รับ URL ของไฟล์ที่อัปโหลด
@@ -57,6 +85,8 @@ const IssueReportController = {
           },
           "new" //เพิ่มโหมด 
         );
+
+        await client.query('COMMIT');
         res.status(201).json({
           message: "Issue reported successfully",
           report: {
@@ -73,8 +103,11 @@ const IssueReportController = {
         });
 
       } catch (error) {
+        await client.query('ROLLBACK');
         console.error("Internal Server Error:", error);
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ error: "เกิดข้อผิดพลาดระหว่างการส่งข้อมูล กรุณาลองใหม่อีกครั้ง" });
+      } finally {
+        client.release();
       }
     }
   ],

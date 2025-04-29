@@ -14,7 +14,7 @@ const UserModel = {
       FROM users u
       LEFT JOIN agents a ON u.id = a.user_id
       LEFT JOIN departments d ON a.department_id = d.id
-      WHERE u.role IN ('admin', 'agent' , 'รองคณบดี')
+      WHERE u.role IN ('admin', 'agent' , 'รองคณบดี' ,'superadmin')
       ORDER BY u.id ASC
     `);
   },

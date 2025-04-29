@@ -134,13 +134,12 @@ const IssueReportModel = {
                         WHERE ii.issue_log_id = il.id)
                 ) ORDER BY 
         CASE 
-            WHEN il.status = 'รอรับเรื่อง' THEN 1  
-            WHEN il.status = 'กำลังดำเนินการ' THEN 2  
-            WHEN il.status = 'เสร็จสิ้น' THEN 3  
-            ELSE 4 
-        END,
-        il.ongoingat ASC  
-            ), '[]') AS status_updates
+          WHEN il.status = 'กำลังดำเนินการ' THEN il.ongoingat
+          WHEN il.status = 'เสร็จสิ้น' THEN il.endat  
+          ELSE ir.created_at 
+      END ASC,
+      il.endat ASC 
+      ), '[]') AS status_updates
 
         FROM issues ir
         LEFT JOIN issue_categories ic ON ir.problem_id = ic.id

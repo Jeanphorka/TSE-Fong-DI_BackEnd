@@ -237,7 +237,7 @@ const IssueReportModel = {
 
 // ดึงรายงานล่าสุดของผู้ใช้จากตาราง issue_reports
   getLatestIssueByUser: async (userId) => {
-  const result = await pool.query(
+    const result = await pool.query(
     `SELECT * FROM issues
      WHERE reporter_id = $1 
      ORDER BY created_at DESC 
@@ -248,17 +248,17 @@ const IssueReportModel = {
 },
 
   checkDuplicateIssue: async (reporter_id, problem_id, location_id, description) => {
-  const result = await pool.query(
-    `SELECT id FROM issues
-     WHERE reporter_id = $1
-     AND problem_id = $2
-     AND location_id = $3
-     AND description = $4
+    const result = await pool.query(
+      `SELECT id FROM issues
+      WHERE reporter_id = $1
+      AND problem_id = $2
+      AND location_id = $3
+      AND description = $4
 
-     LIMIT 1`,
-    [reporter_id, problem_id, location_id, description.trim()]
-  );
-  return result.rows.length > 0;
+      LIMIT 1`,
+      [reporter_id, problem_id, location_id, description.trim()]
+    );
+    return result.rows.length > 0;
 }
 
   

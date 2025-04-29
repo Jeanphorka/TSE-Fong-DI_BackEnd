@@ -72,10 +72,10 @@ const ActionAdminModel = {
   updateDeleteFlag: (id, isDeleted) => {
     const query = `
       UPDATE issues
-      SET delete = $1
+      SET deleted = $1
       WHERE id = $2;
     `;
-    return db.query(query, [isDeleted, id]);
+    return pool.query(query, [isDeleted, id]);
   }
 };
 

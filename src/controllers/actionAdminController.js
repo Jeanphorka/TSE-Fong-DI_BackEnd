@@ -151,17 +151,7 @@ const ActionAdminController = {
         new Date().toISOString(),
       );
 
-      const fullIssue = await IssueReportModel.getIssueById(id);
-      await notifyAdmins(
-        {
-          transaction_id: fullIssue.transaction_id,
-          title: fullIssue.title, // category_name
-          description: fullIssue.description,
-          location: `อาคาร ${fullIssue.building} ชั้น ${fullIssue.floor ?? ""} ห้อง ${fullIssue.room ?? ""}`,
-          departmentName: fullIssue.department_name
-        },
-        "return" // <<< เพิ่มโหมด assign
-      );
+      
 
       // set deleted = true
       await actionAdminModel.deleteIssue(id);
@@ -282,7 +272,20 @@ const ActionAdminController = {
         return res.status(400).json({ error: 'ข้อมูลไม่ถูกต้อง' });
       }
 
-      await IssueModel.updateDeleteFlag(id, isDeleted);
+      await actionAdminModel.updateDeleteFlag(id, isDeleted);
+
+      const fullIssue = await IssueReportModel.getIssueById(id);
+
+      await notifyAdmins(
+        {
+          transaction_id: fullIssue.transaction_id,
+          title: fullIssue.title, // category_name
+          description: fullIssue.description,
+          location: `อาคาร ${fullIssue.building} ชั้น ${fullIssue.floor ?? ""} ห้อง ${fullIssue.room ?? ""}`,
+          departmentName: fullIssue.department_name
+        },
+        "return" // <<< เพิ่มโหมด assign
+      );
 
       res.status(200).json({ message: 'อัปเดตสถานะลบสำเร็จ' });
     } catch (err) {

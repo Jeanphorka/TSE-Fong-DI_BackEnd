@@ -57,7 +57,7 @@ exports.login = async (req, res) => {
     const data = tuResponse.data;
 
     if (!data.status) {
-      return res.status(401).json({ message: 'เข้าสู่ระบบล้มเหลว รหัสหรือรหัสผ่านไม่ถูกต้อง' });
+      return res.status(401).json({ message: 'เข้าสู่ระบบล้มเหลว Usernameหรือรหัสผ่านไม่ถูกต้อง' });
     }
 
     if (data.faculty && data.faculty !== 'คณะวิศวกรรมศาสตร์') {

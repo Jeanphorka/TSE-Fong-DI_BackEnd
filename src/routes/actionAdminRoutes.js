@@ -180,7 +180,7 @@ router.put('/update-department/:id', authMiddleware, ActionAdminController.updat
 
 /**
  * @swagger
- * /api/issues/update-delete/{id}:
+ * /api/action-admin/update-delete/{id}:
  *   put:
  *     tags:
  *       - ActionDean

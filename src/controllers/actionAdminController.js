@@ -287,6 +287,19 @@ const ActionAdminController = {
         "return" // <<< เพิ่มโหมด assign
       );
 
+       // log 
+       await IssueLogModel.createIssueLog(
+        adminId,  // user_id 
+        id,  // issue_id
+        "return",  // action = "delete"
+        null,  // status = null
+        null,  // ongoingAt = null
+        null,  // endAt = null
+        false,  // has_images = false
+        null,  // comment = null
+        new Date().toISOString(),
+      );
+
       res.status(200).json({ message: 'อัปเดตสถานะลบสำเร็จ' });
     } catch (err) {
       console.error('❌ updateDeleteFlag error:', err.message);

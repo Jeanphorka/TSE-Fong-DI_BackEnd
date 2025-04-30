@@ -33,6 +33,10 @@ const authController = require('../controllers/authController');
  *                 type: string
  *                 example: "12345678911"
  *                 description: รหัสผ่านบัญชีมหาวิทยาลัย
+ *               uid:
+ *                 type: string
+ *                 example: "1234567890"
+ *                 description: uid line 
  *     responses:
  *       200:
  *         description: เข้าสู่ระบบสำเร็จ พร้อมส่ง token กลับมา

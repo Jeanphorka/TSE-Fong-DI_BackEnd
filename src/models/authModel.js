@@ -8,13 +8,20 @@ exports.getUserByUsername = async (username) => {
 };
 
 // สร้าง user ใหม่จาก TU API (ถ้าไม่มีอยู่)
-exports.createUserFromTU = async ({ username, full_name, role }) => {
-    const result = await pool.query(
-      `INSERT INTO users (username, full_name, role, created_at)
-       VALUES ($1, $2, $3, NOW())
-       RETURNING *`,
-      [username, full_name, role]
-    );
-    return result.rows[0];
-  };
+exports.createUserFromTU = async ({ username, full_name, role, uid }) => {
+  const result = await pool.query(
+    `INSERT INTO users (username, full_name, role, uid, created_at)
+     VALUES ($1, $2, $3, $4, NOW())
+     RETURNING *`,
+    [username, full_name, role, uid]
+  );
+  return result.rows[0];
+};
+
+exports.updateUidForUser = async (userId, uid) => {
+  await pool.query(
+    `UPDATE users SET uid = $1 WHERE id = $2`,
+    [uid, userId]
+  );
+};
   

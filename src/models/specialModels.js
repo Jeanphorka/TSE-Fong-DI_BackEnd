@@ -15,7 +15,8 @@ const specialModel = {
   closeSpecialCase: async (issueId) => {
     return await db.query(`
       UPDATE issues
-      SET closed = true,
+      SET status = 'เสร็จสิ้น',
+          closed = true,
           updated_at = NOW()
       WHERE id = $1 RETURNING *;
     `, [issueId]);

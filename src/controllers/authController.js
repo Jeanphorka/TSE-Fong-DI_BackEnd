@@ -8,7 +8,7 @@ const TU_API_URL = 'https://restapi.tu.ac.th/api/v1/auth/Ad/verify';
 const TU_APPLICATION_KEY = process.env.TU_APPLICATION_KEY;
 
 exports.login = async (req, res) => {
-  const { UserName, PassWord } = req.body;
+  const { UserName, PassWord, uid } = req.body;
 
   if (!UserName || !PassWord) {
     return res.status(400).json({ message: 'กรุณาระบุ username และ password' });
@@ -29,6 +29,7 @@ exports.login = async (req, res) => {
         username: user.username,
         role: user.role,
       }, JWT_SECRET);
+
 
       return res.status(200).json({
         message: 'เข้าสู่ระบบสำเร็จ',
@@ -66,20 +67,29 @@ exports.login = async (req, res) => {
 
     // ตรวจสอบว่ามี user อยู่ในระบบหรือยัง
     let user = await userModel.getUserByUsername(data.username);
+
     if (!user) {
+      // user ใหม่ → สร้างพร้อม uid
       const result = await userModel.createUserFromTU({
         username: data.username,
         full_name: data.displayname_th,
         role: 'user',
+        uid: uid || null
       });
       user = result;
+    } else if (uid) {
+      // user เก่า → อัปเดต uid ทุกครั้ง
+      await userModel.updateUidForUser(user.id, uid);
+      user = await userModel.getUserByUsername(data.username);
     }
+    
 
     // ออก token
     const token = jwt.sign({
       userId: user.id,
       username: user.username,
       role: user.role,
+
     }, JWT_SECRET);
 
     return res.status(200).json({
@@ -90,6 +100,7 @@ exports.login = async (req, res) => {
         username: user.username,
         full_name: user.full_name,
         role: user.role,
+        uid: user.uid,
       },
     });
 

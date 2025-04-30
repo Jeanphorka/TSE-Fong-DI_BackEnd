@@ -200,7 +200,7 @@ const IssueReportModel = {
               END,
             'updated_by',
               CASE 
-                WHEN il.status IN ('กำลังดำเนินการ', 'เสร็จสิ้น', 'Reopened') THEN (
+                WHEN il.status IN ('กำลังดำเนินการ', 'เสร็จสิ้น') THEN (
                   SELECT full_name
                   FROM users ul
                   WHERE ul.id = il.user_id

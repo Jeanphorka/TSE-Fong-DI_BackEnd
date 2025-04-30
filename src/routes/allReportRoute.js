@@ -79,6 +79,11 @@ const authMiddleware = require('../middlewares/authMiddleware');
  *                       deleted:
  *                         type: boolean
  *                         example: false
+ *                       deleteat:
+ *                         type: string
+ *                         format: date-time
+ *                         nullable: true
+ *                         example: "2025-03-02T06:43:04.476Z"
  *       500:
  *         description: เกิดข้อผิดพลาดภายในเซิร์ฟเวอร์
  *         content:

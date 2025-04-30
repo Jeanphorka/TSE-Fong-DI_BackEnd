@@ -183,35 +183,47 @@ const IssueReportModel = {
           ir.closed,
           ir.deleted,
 
-          COALESCE(jsonb_agg(
-              jsonb_build_object(
-                  'status', il.status,
-                  'description', 
-                    CASE
-                        WHEN il.status = 'รอรับเรื่อง' THEN ir.description
-                        ELSE il.comment
-                    END,
-                  'updated_at', 
-                    CASE 
-                        WHEN il.status = 'กำลังดำเนินการ' THEN il.ongoingat
-                        WHEN il.status = 'เสร็จสิ้น' THEN il.endat
-                        ELSE ir.created_at
-                    END,
-                  'updated_by', (SELECT full_name 
-                      FROM users ul
-                      WHERE ul.id = il.user_id),
-                  'images', 
-                      (SELECT COALESCE(jsonb_agg(ii.file_url), '[]') 
-                      FROM issue_image ii 
-                      WHERE ii.issue_log_id = il.id)
-              ) ORDER BY 
-      CASE 
-          WHEN il.status = 'กำลังดำเนินการ' THEN il.ongoingat
-          WHEN il.status = 'เสร็จสิ้น' THEN il.endat  
-          ELSE ir.created_at 
-      END ASC,
-      il.endat ASC 
-      ), '[]') AS status_updates
+      COALESCE(
+        jsonb_agg(
+          jsonb_build_object(
+            'status', il.status,
+            'description', 
+              CASE
+                WHEN il.status = 'รอรับเรื่อง' THEN ir.description
+                ELSE il.comment
+              END,
+            'updated_at', 
+              CASE 
+                WHEN il.status = 'กำลังดำเนินการ' THEN il.ongoingat
+                WHEN il.status = 'เสร็จสิ้น' THEN il.endat
+                ELSE ir.created_at
+              END,
+            'updated_by',
+              CASE 
+                WHEN il.status IN ('กำลังดำเนินการ', 'เสร็จสิ้น', 'Reopened') THEN (
+                  SELECT full_name
+                  FROM users ul
+                  WHERE ul.id = il.user_id
+                )
+                ELSE NULL
+              END,
+            'images', 
+              (
+                SELECT COALESCE(jsonb_agg(ii.file_url), '[]'::jsonb)
+                FROM issue_image ii 
+                WHERE ii.issue_log_id = il.id
+              )
+          )
+          ORDER BY 
+            CASE 
+              WHEN il.status = 'กำลังดำเนินการ' THEN il.ongoingat
+              WHEN il.status = 'เสร็จสิ้น' THEN il.endat  
+              ELSE ir.created_at 
+            END ASC,
+            il.endat ASC
+        ),
+        '[]'::jsonb
+      ) AS status_updates
 
       FROM issues ir
       LEFT JOIN issue_categories ic ON ir.problem_id = ic.id

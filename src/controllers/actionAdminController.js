@@ -105,6 +105,10 @@ const ActionAdminController = {
         const fullIssue = await IssueReportModel.getIssueById(id);
         const uid = await getUidByIssueId(id);
 
+        console.log("UID:", uid); // ตรวจสอบ UID ที่ได้จากฐานข้อมูล
+        console.log("Status:", status); // ตรวจสอบข้อมูล issue ที่ได้จากฐานข้อมูล
+        
+
         if (uid && (status === "กำลังดำเนินการ" || status === "เสร็จสิ้น")) {
           const lineMessage = {
             type: "flex",

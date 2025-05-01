@@ -105,9 +105,11 @@ const ActionAdminController = {
         const fullIssue = await IssueReportModel.getIssueById(id);
         const uid = await getUidByIssueId(id);
 
-        console.log("UID:", uid); // ตรวจสอบ UID ที่ได้จากฐานข้อมูล
-        console.log("Status:", status); // ตรวจสอบข้อมูล issue ที่ได้จากฐานข้อมูล
-        
+        console.log("🔍 Update Triggered by User:", req.user?.userId);
+        console.log("🔍 Issue ID:", id);
+        console.log("🔍 Status:", status);
+        console.log("🔍 UID to notify:", uid);
+
 
         if (uid && (status === "กำลังดำเนินการ" || status === "เสร็จสิ้น")) {
           const lineMessage = {
@@ -210,6 +212,9 @@ const ActionAdminController = {
           };
 
         await pushLineMessage(uid, lineMessage);
+        
+    } else {
+      console.warn("⚠ ไม่พบ UID หรือเงื่อนไขไม่ตรง status");
     }
 
 

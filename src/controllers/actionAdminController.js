@@ -124,7 +124,7 @@ const ActionAdminController = {
                 contents: [
                   {
                     type: "text",
-                    text: "สถานะอัปเดต: " + status,
+                    text: `สถานะอัปเดต: ${status}`,
                     weight: "bold",
                     size: "xl",
                     color: "#1DB446"
@@ -147,7 +147,7 @@ const ActionAdminController = {
                         layout: "baseline",
                         contents: [
                           { type: "text", text: "สถานะ:", flex: 2, size: "sm", color: "#aaaaaa" },
-                          { type: "text", text: status , flex: 5, size: "sm", color: "#f39c12" }
+                          { type: "text", text: status, flex: 5, size: "sm", color: "#f39c12" }
                         ]
                       },
                       {
@@ -155,7 +155,7 @@ const ActionAdminController = {
                         layout: "baseline",
                         contents: [
                           { type: "text", text: "สถานที่:", flex: 2, size: "sm", color: "#aaaaaa" },
-                          { type: "text", text: fullIssue.building + " ชั้น " + (fullIssue.floor || "-") + " ห้อง " + (fullIssue.room || "-"), flex: 5, size: "sm", wrap: true, color: "#333333" }
+                          { type: "text", text: `ตึก${fullIssue.building} ชั้น ${fullIssue.floor ?? "-"} ห้อง ${fullIssue.room ?? "-"}`, flex: 5, size: "sm", wrap: true, color: "#333333" }
                         ]
                       },
                       {
@@ -166,14 +166,14 @@ const ActionAdminController = {
                           { type: "text", text: fullIssue.title, flex: 5, size: "sm", color: "#333333" }
                         ]
                       },
-                      {
+                      ...(comment ? [{
                         type: "box",
                         layout: "baseline",
                         contents: [
                           { type: "text", text: "รายละเอียด:", flex: 2, size: "sm", color: "#aaaaaa" },
-                          { type: "text", text: comment , flex: 5, size: "sm", color: "#333333" }
+                          { type: "text", text: comment, flex: 5, size: "sm", color: "#333333", wrap: true }
                         ]
-                      }
+                      }] : [])
                     ]
                   }
                 ]
@@ -206,16 +206,15 @@ const ActionAdminController = {
                       }]
                     : [])
                 ]
-              }              
+              }
             }
           };
-
-        await pushLineMessage(uid, lineMessage);
         
-    } else {
-      console.warn("⚠ ไม่พบ UID หรือเงื่อนไขไม่ตรง status");
-    }
-
+          await pushLineMessage(uid, lineMessage);
+        } else {
+          console.warn("⚠ ไม่พบ UID หรือ status ไม่ตรงกำหนด");
+        }
+        
 
         res.status(200).json({
           message: "Issue updated successfully",

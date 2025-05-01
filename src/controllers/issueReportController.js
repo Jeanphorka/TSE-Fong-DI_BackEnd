@@ -3,7 +3,7 @@ const IssueReportModel = require("../models/issueReportModel");
 const IssueLogModel = require("../models/issueLogModel");
 const { notifyAgents } = require('../controllers/notifyController');
 const pool = require('../../config/db'); 
-const { getUidByUserId } = require('../models/notifyModel');
+const { getUidByIssueId } = require('../models/notifyModel');
 const { pushLineMessage } = require('../utils/lineNotify');
 
 
@@ -88,8 +88,8 @@ const IssueReportController = {
           "new" //เพิ่มโหมด 
         );
 
-      const userUid = await getUidByUserId(reporter_id);
-
+      // ส่งการแจ้งเตือนผ่าน LINE Notify
+      const userUid = await getUidByIssueId(issue.id);
       if (userUid) {
         const lineMessage = {
           type: "flex",

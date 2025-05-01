@@ -20,14 +20,14 @@ const getAdminEmails = async () => {
   return result.rows.map(row => row.email);
 };
 
-const getUidByUserId = async (reportId) => {
+const getUidByIssueId = async (issueId) => {
   const result = await db.query(`
     SELECT u.uid
     FROM issues i
     JOIN users u ON u.id = i.reporter_id
     WHERE i.id = $1
-  `, [reportId]);
+  `, [issueId]);
   return result.rows[0]?.uid || null;
 };
 
-module.exports =  { getAgentEmailsByDepartment, getAdminEmails , getUidByUserId };
+module.exports =  { getAgentEmailsByDepartment, getAdminEmails , getUidByIssueId };

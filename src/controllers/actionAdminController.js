@@ -3,7 +3,7 @@ const actionAdminModel = require("../models/actionAdminModel");
 const IssueLogModel = require("../models/issueLogModel");
 const IssueReportModel = require("../models/issueReportModel");
 const {notifyAgents , notifyAdmins} = require('../controllers/notifyController');
-const { getUidByUserId } = require('../models/notifyModel');
+const { getUidByIssueId } = require('../models/notifyModel');
 const { pushLineMessage } = require('../utils/lineNotify');
 
 
@@ -103,7 +103,7 @@ const ActionAdminController = {
 
         //  ดึงข้อมูลฉบับเต็มของ issue
         const fullIssue = await IssueReportModel.getIssueById(id);
-        const uid = await getUidByUserId(fullIssue.reporter_id);
+        const uid = await getUidByIssueId(id);
 
         if (uid && (status === "กำลังดำเนินการ" || status === "เสร็จสิ้น")) {
           const lineMessage = {

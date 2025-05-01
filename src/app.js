@@ -23,6 +23,8 @@ const CSS_URL =
   "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.3.0/swagger-ui.min.css";
 
 const app = express();
+
+app.set('trust proxy', 1); // trust first proxy
 app.use(cors());
 app.use(express.json());
 

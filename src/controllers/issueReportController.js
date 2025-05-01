@@ -3,6 +3,8 @@ const IssueReportModel = require("../models/issueReportModel");
 const IssueLogModel = require("../models/issueLogModel");
 const { notifyAgents } = require('../controllers/notifyController');
 const pool = require('../../config/db'); 
+const { getUidByUserId } = require('../models/notifyModel');
+const { pushLineMessage } = require('../utils/lineNotify');
 
 
 const IssueReportController = {
@@ -85,6 +87,92 @@ const IssueReportController = {
           },
           "new" //เพิ่มโหมด 
         );
+
+      const userUid = await getUidByUserId(reporter_id);
+
+      if (userUid) {
+        const lineMessage = {
+          type: "flex",
+          altText: "ระบบได้รับการแจ้งปัญหาของคุณเรียบร้อยแล้ว",
+          contents: {
+            type: "bubble",
+            size: "mega",
+            body: {
+              type: "box",
+              layout: "vertical",
+              spacing: "md",
+              contents: [
+                {
+                  type: "text",
+                  text: "📌 แจ้งปัญหาสำเร็จ",
+                  weight: "bold",
+                  size: "xl",
+                  color: "#1DB446"
+                },
+                {
+                  type: "box",
+                  layout: "vertical",
+                  spacing: "sm",
+                  contents: [
+                    {
+                      type: "box",
+                      layout: "baseline",
+                      contents: [
+                        { type: "text", text: "หมายเลข:", flex: 2, size: "sm", color: "#aaaaaa" },
+                        { type: "text", text: transaction_id, flex: 5, size: "sm", color: "#333333" }
+                      ]
+                    },
+                    {
+                      type: "box",
+                      layout: "baseline",
+                      contents: [
+                        { type: "text", text: "สถานะ:", flex: 2, size: "sm", color: "#aaaaaa" },
+                        { type: "text", text: "รอรับเรื่อง", flex: 5, size: "sm", color: "#f39c12" }
+                      ]
+                    },
+                    {
+                      type: "box",
+                      layout: "baseline",
+                      contents: [
+                        { type: "text", text: "สถานที่:", flex: 2, size: "sm", color: "#aaaaaa" },
+                        { type: "text", text: fullIssue.building + " ชั้น " + (fullIssue.floor || "-") + " ห้อง " + (fullIssue.room || "-"), flex: 5, size: "sm", wrap: true, color: "#333333" }
+                      ]
+                    },
+                    {
+                      type: "box",
+                      layout: "baseline",
+                      contents: [
+                        { type: "text", text: "ประเภท:", flex: 2, size: "sm", color: "#aaaaaa" },
+                        { type: "text", text: fullIssue.title, flex: 5, size: "sm", color: "#333333" }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            footer: {
+              type: "box",
+              layout: "vertical",
+              spacing: "sm",
+              contents: [
+                {
+                  type: "button",
+                  style: "primary",
+                  color: "#1DB446",
+                  action: {
+                    type: "uri",
+                    label: "🔍 ดูสถานะปัญหา",
+                    uri: `https://tse-fongdi.vercel.app/UserPage/IssueTimeline/${issue.id}`
+                  }
+                }
+              ]
+            }
+          }
+        };
+        
+      await pushLineMessage(userUid, lineMessage);
+}
+
 
         await client.query('COMMIT');
         res.status(201).json({

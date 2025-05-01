@@ -1,8 +1,11 @@
-const { upload, deleteFileFromS3 } = require("../middlewares/uploadMiddleware");
+const { upload } = require("../middlewares/uploadMiddleware");
 const actionAdminModel = require("../models/actionAdminModel");
 const IssueLogModel = require("../models/issueLogModel");
 const IssueReportModel = require("../models/issueReportModel");
 const {notifyAgents , notifyAdmins} = require('../controllers/notifyController');
+const { getUidByUserId } = require('../models/notifyModel');
+const { pushLineMessage } = require('../utils/lineNotify');
+
 
 
 const ActionAdminController = {
@@ -97,6 +100,114 @@ const ActionAdminController = {
         if (has_images) {
           uploadedImages = await actionAdminModel.uploadIssueImages(id, logEntry.id, adminId, imageUrls);
         }
+
+        //  ดึงข้อมูลฉบับเต็มของ issue
+        const fullIssue = await IssueReportModel.getIssueById(id);
+        const uid = await getUidByUserId(fullIssue.reporter_id);
+
+        if (uid && (status === "กำลังดำเนินการ" || status === "เสร็จสิ้น")) {
+          const lineMessage = {
+            type: "flex",
+            altText: `สถานะแจ้งปัญหาของคุณอัปเดตเป็น "${status}"`,
+            contents: {
+              type: "bubble",
+              size: "mega",
+              body: {
+                type: "box",
+                layout: "vertical",
+                spacing: "md",
+                contents: [
+                  {
+                    type: "text",
+                    text: "สถานะอัปเดต: " + status,
+                    weight: "bold",
+                    size: "xl",
+                    color: "#1DB446"
+                  },
+                  {
+                    type: "box",
+                    layout: "vertical",
+                    spacing: "sm",
+                    contents: [
+                      {
+                        type: "box",
+                        layout: "baseline",
+                        contents: [
+                          { type: "text", text: "หมายเลข:", flex: 2, size: "sm", color: "#aaaaaa" },
+                          { type: "text", text: fullIssue.transaction_id, flex: 5, size: "sm", color: "#333333" }
+                        ]
+                      },
+                      {
+                        type: "box",
+                        layout: "baseline",
+                        contents: [
+                          { type: "text", text: "สถานะ:", flex: 2, size: "sm", color: "#aaaaaa" },
+                          { type: "text", text: status , flex: 5, size: "sm", color: "#f39c12" }
+                        ]
+                      },
+                      {
+                        type: "box",
+                        layout: "baseline",
+                        contents: [
+                          { type: "text", text: "สถานที่:", flex: 2, size: "sm", color: "#aaaaaa" },
+                          { type: "text", text: fullIssue.building + " ชั้น " + (fullIssue.floor || "-") + " ห้อง " + (fullIssue.room || "-"), flex: 5, size: "sm", wrap: true, color: "#333333" }
+                        ]
+                      },
+                      {
+                        type: "box",
+                        layout: "baseline",
+                        contents: [
+                          { type: "text", text: "ประเภท:", flex: 2, size: "sm", color: "#aaaaaa" },
+                          { type: "text", text: fullIssue.title, flex: 5, size: "sm", color: "#333333" }
+                        ]
+                      },
+                      {
+                        type: "box",
+                        layout: "baseline",
+                        contents: [
+                          { type: "text", text: "รายละเอียด:", flex: 2, size: "sm", color: "#aaaaaa" },
+                          { type: "text", text: comment , flex: 5, size: "sm", color: "#333333" }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              footer: {
+                type: "box",
+                layout: "vertical",
+                spacing: "sm",
+                contents: [
+                  {
+                    type: "button",
+                    style: "primary",
+                    color: "#1DB446",
+                    action: {
+                      type: "uri",
+                      label: "🔍 ดูสถานะปัญหา",
+                      uri: `https://tse-fongdi.vercel.app/UserPage/IssueTimeline/${id}`
+                    }
+                  },
+                  ...(status === "เสร็จสิ้น"
+                    ? [{
+                        type: "button",
+                        style: "primary",
+                        color: "#42A5F5",
+                        action: {
+                          type: "uri",
+                          label: "✏️ รีวิวปัญหา",
+                          uri: `https://tse-fongdi.vercel.app/UserPage/ReviewPage/${id}`
+                        }
+                      }]
+                    : [])
+                ]
+              }              
+            }
+          };
+
+        await pushLineMessage(uid, lineMessage);
+    }
+
 
         res.status(200).json({
           message: "Issue updated successfully",

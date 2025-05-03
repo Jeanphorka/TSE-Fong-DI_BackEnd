@@ -11,7 +11,7 @@ const options = {
         },
         servers: [
             {
-                url: 'https://tse-fong-di-back-end.vercel.app/',
+                url: 'https://tse-fong-dibackend-production.up.railway.app/',
                 description: 'My API Documentation'
             }
         ]

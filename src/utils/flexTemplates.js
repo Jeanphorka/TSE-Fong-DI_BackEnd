@@ -327,7 +327,7 @@ const formatDate = (iso) => {
               size: "md",
               color: "#4A5568",
               margin: "md",
-              offsetTop: "sm"
+              // offsetTop: "sm"
             },
             {
               type: "box",
@@ -373,7 +373,7 @@ const formatDate = (iso) => {
                   flex: 1
                 }
               ],
-              offsetTop: "-5px"
+              // offsetTop: "-5px"
             },
             {
               type: "text",
@@ -381,7 +381,7 @@ const formatDate = (iso) => {
               size: "xl",
               align: "center",
               color: "#F6AD55",
-              offsetTop: "-4px"
+              // offsetTop: "-4px"
             },
             ...(comment
               ? [

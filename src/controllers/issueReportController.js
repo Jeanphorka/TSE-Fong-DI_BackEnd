@@ -91,10 +91,18 @@ const IssueReportController = {
       // ส่งการแจ้งเตือนผ่าน LINE Notify
       const userUid = await getUidByIssueId(issue.id);
       const firstImageUrl = uploadedImages?.[0]?.file_url || "https://tse-fongdi.vercel.app/logo.png";
-      const dateThai = new Date(issue.created_at).toLocaleString("th-TH", {
-        dateStyle: "short",
-        timeStyle: "short"
-      });
+      const formatDate = (iso) => {
+        const date = new Date(iso);
+        return date.toLocaleString("th-TH", {
+          timeZone: "Asia/Bangkok",
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+        }).replace(',', '').replace(' ', ' เวลา ');
+      };
+      
       if (userUid) {
         const lineMessage = {
           type: "flex",
@@ -212,7 +220,7 @@ const IssueReportController = {
                     },
                     {
                       type: "text",
-                      text: dateThai,
+                      text: formatDate(issue.created_at),
                       size: "sm",
                       color: "#333333",
                       wrap: true,
@@ -232,7 +240,7 @@ const IssueReportController = {
                   style: "primary",
                   action: {
                     type: "uri",
-                    label: "🔍 ดูไทม์ไลน์การทำงาน",
+                    label: "ดูไทม์ไลน์การทำงาน",
                     uri: `https://tse-fongdi.vercel.app/UserPage/IssueTimeline/${issue.id}`
                   },
                   color: "#8C181C"

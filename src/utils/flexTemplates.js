@@ -1,13 +1,15 @@
 const formatDate = (iso) => {
-    const date = new Date(iso);
-    return date.toLocaleString("th-TH", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).replace(',', '').replace(' ', ' เวลา ');
-  };
+  const date = new Date(iso);
+  return date.toLocaleString("th-TH", {
+    timeZone: "Asia/Bangkok",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).replace(',', '').replace(' ', ' เวลา ');
+};
+
   
   exports.generateTimelineFlex = (fullIssue) => {
     const transactionId = fullIssue.transaction_id;
@@ -196,12 +198,22 @@ const formatDate = (iso) => {
   };
 
   exports.generateReviewSubmittedFlex = (fullIssue) => {
-    const { transaction_id, title, building, floor, room, created_at, review, comment, id } = fullIssue;
+    const {
+      transaction_id = "-",
+      title = "-",
+      building = "-",
+      floor = "-",
+      room = "-",
+      created_at,
+      review = 0,
+      comment = "",
+      
+      id
+    } = fullIssue;
   
     const beforeImage = fullIssue.status_updates.find(s => s.status === "รอรับเรื่อง" && s.images.length > 0)?.images[0];
     const afterImage = fullIssue.status_updates.filter(s => s.status === "เสร็จสิ้น" && s.images.length > 0).at(-1)?.images[0];
     const stars = '⭐'.repeat(Math.floor(review || 0));
-    const formattedDate = formatDate(created_at); // you should define this separately
   
     return {
       type: "flex",
@@ -298,7 +310,7 @@ const formatDate = (iso) => {
                     { type: "text", text: "วันที่แจ้ง:", size: "sm", color: "#AAAAAA", flex: 2 },
                     {
                       type: "text",
-                      text: formattedDate,
+                      text: formatDate(created_at),
                       size: "sm",
                       color: "#333333",
                       wrap: true,

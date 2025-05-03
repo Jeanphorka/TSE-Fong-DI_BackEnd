@@ -374,14 +374,14 @@ const formatDate = (iso) => {
               ],
               // offsetTop: "-5px"
             },
-            {
-              type: "text",
-              text: stars,
-              size: "xl",
-              align: "center",
-              color: "#F6AD55",
-              // offsetTop: "-4px"
-            },
+            // {
+            //   type: "text",
+            //   text: stars,
+            //   size: "xl",
+            //   align: "center",
+            //   color: "#F6AD55",
+            //   // offsetTop: "-4px"
+            // },
             ...(comment
               ? [
                 {

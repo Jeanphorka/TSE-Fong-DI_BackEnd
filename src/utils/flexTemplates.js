@@ -413,7 +413,7 @@ const formatDate = (iso) => {
               ? [
                 {
                   type: "text",
-                  text: '"comment"' ,
+                  text: `"${comment}"`,
                   wrap: true,
                   margin: "md",
                   color: "#333333",

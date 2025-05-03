@@ -205,8 +205,8 @@ const formatDate = (iso) => {
       floor = "-",
       room = "-",
       created_at = "-",
-      review = 0,
-      comment = "-",
+      review ,
+      comment ,
     } = fullIssue;
   
     const beforeImage = fullIssue.status_updates.find(s => s.status === "รอรับเรื่อง" && s.images.length > 0)?.images[0];
@@ -411,7 +411,7 @@ const formatDate = (iso) => {
               ? [
                 {
                   type: "text",
-                  text: `“${comment}”` ,
+                  text: comment ,
                   wrap: true,
                   margin: "md",
                   color: "#333333",

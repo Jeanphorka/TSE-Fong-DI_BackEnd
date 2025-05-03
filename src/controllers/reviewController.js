@@ -72,10 +72,7 @@ const ReviewController = {
       );
     }
 
-      const fullIssue = await IssueReportModel.getIssueById(id);
-      const message = generateReviewSubmittedFlex(fullIssue);
-      const uid = await getUidByIssueId(id);
-      await pushLineMessage(uid, message);
+      
 
 
 
@@ -85,6 +82,11 @@ const ReviewController = {
       console.error("submitReview error:", error);
       res.status(500).json({ error: error.message });
     }
+
+    const fullIssue = await IssueReportModel.getIssueById(id);
+      const message = generateReviewSubmittedFlex(fullIssue);
+      const uid = await getUidByIssueId(id);
+      await pushLineMessage(uid, message);
   }
 };
 

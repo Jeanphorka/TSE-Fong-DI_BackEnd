@@ -199,15 +199,17 @@ const formatDate = (iso) => {
 
   exports.generateReviewSubmittedFlex = (fullIssue) => {
     const {
-      transaction_id = "-",
-      title = "-",
+      transaction_id ,
+      title ,
       building = "-",
       floor = "-",
       room = "-",
-      created_at = "-",
+      created_at ,
       review ,
-      comment ,
+      comment = "-",
     } = fullIssue;
+
+    console.log(comment, review);
   
     const beforeImage = fullIssue.status_updates.find(s => s.status === "รอรับเรื่อง" && s.images.length > 0)?.images[0];
     const afterImage = fullIssue.status_updates.filter(s => s.status === "เสร็จสิ้น" && s.images.length > 0).at(-1)?.images[0];
@@ -411,7 +413,7 @@ const formatDate = (iso) => {
               ? [
                 {
                   type: "text",
-                  text: comment ,
+                  text: '"comment"' ,
                   wrap: true,
                   margin: "md",
                   color: "#333333",
@@ -424,5 +426,7 @@ const formatDate = (iso) => {
         }
       }
     };
+    
+    
   };
     

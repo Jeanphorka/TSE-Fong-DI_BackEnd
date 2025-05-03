@@ -212,7 +212,6 @@ const formatDate = (iso) => {
     const beforeImage = fullIssue.status_updates.find(s => s.status === "รอรับเรื่อง" && s.images.length > 0)?.images[0];
     const afterImage = fullIssue.status_updates.filter(s => s.status === "เสร็จสิ้น" && s.images.length > 0).at(-1)?.images[0];
     const stars = '⭐'.repeat(Math.floor(review || 0));
-    const safeComment = comment?.replace(/"/g, '“').substring(0, 200) || "";
   
     return {
       type: "flex",
@@ -326,7 +325,7 @@ const formatDate = (iso) => {
               size: "md",
               color: "#4A5568",
               margin: "md",
-              // offsetTop: "sm"
+              offsetTop: "sm"
             },
             {
               type: "box",
@@ -372,7 +371,7 @@ const formatDate = (iso) => {
                   flex: 1
                 }
               ],
-              // offsetTop: "-5px"
+              offsetTop: "-5px"
             },
             // {
             //   type: "text",
@@ -386,7 +385,7 @@ const formatDate = (iso) => {
               ? [
                 {
                   type: "text",
-                  text: safeComment ,
+                  text: `“${comment}”` ,
                   wrap: true,
                   margin: "md",
                   color: "#333333",

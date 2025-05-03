@@ -3,6 +3,10 @@ const IssueLogModel = require("../models/issueLogModel");
 const IssueReportModel = require("../models/issueReportModel");
 const specialModel = require("../models/specialModels");
 const actionAdminModel = require("../models/actionAdminModel");
+const { getUidByIssueId } = require('../models/notifyModel');
+const { pushLineMessage } = require('../utils/lineNotify');
+const { generateReviewSubmittedFlex } = require("../utils/flexTemplates");
+
 
 
 const ReviewController = {
@@ -67,6 +71,13 @@ const ReviewController = {
         "รอพิจารณาเคสจากรีวิวต่ำ"
       );
     }
+
+      const fullIssue = await IssueReportModel.getIssueById(id);
+      const message = generateReviewSubmittedFlex(fullIssue);
+      const uid = await getUidByIssueId(id);
+      await pushLineMessage(uid, message);
+
+
 
       const updated = await ReviewModel.saveReview(id, review, comment);
       res.status(200).json({ message: "บันทึกรีวิวสำเร็จ", updated });

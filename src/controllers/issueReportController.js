@@ -90,6 +90,11 @@ const IssueReportController = {
 
       // ส่งการแจ้งเตือนผ่าน LINE Notify
       const userUid = await getUidByIssueId(issue.id);
+      const firstImageUrl = uploadedImages?.[0]?.file_url || "https://tse-fongdi.vercel.app/logo.png";
+      const dateThai = new Date(issue.created_at).toLocaleString("th-TH", {
+        dateStyle: "short",
+        timeStyle: "short"
+      });
       if (userUid) {
         const lineMessage = {
           type: "flex",
@@ -97,54 +102,121 @@ const IssueReportController = {
           contents: {
             type: "bubble",
             size: "mega",
+            hero: {
+              type: "image",
+              url: firstImageUrl,
+              size: "full",
+              aspectMode: "cover",
+              aspectRatio: "20:13"
+            },
             body: {
               type: "box",
               layout: "vertical",
-              spacing: "md",
+              spacing: "lg",
               contents: [
                 {
                   type: "text",
-                  text: "📌 แจ้งปัญหาสำเร็จ",
+                  text: "แจ้งปัญหาสำเร็จ",
                   weight: "bold",
                   size: "xl",
-                  color: "#1DB446"
+                  color: "#8C181C",
+                  align: "start"
                 },
                 {
                   type: "box",
-                  layout: "vertical",
+                  layout: "horizontal",
                   spacing: "sm",
+                  alignItems: "center",
                   contents: [
                     {
                       type: "box",
-                      layout: "baseline",
+                      layout: "vertical",
+                      backgroundColor: "#8C181C",
+                      cornerRadius: "md",
+                      paddingAll: "5px",
                       contents: [
-                        { type: "text", text: "หมายเลข:", flex: 2, size: "sm", color: "#aaaaaa" },
-                        { type: "text", text: transaction_id, flex: 5, size: "sm", color: "#333333" }
-                      ]
+                        {
+                          type: "text",
+                          text: "รอรับเรื่อง",
+                          size: "sm",
+                          color: "#ffffff",
+                          weight: "bold"
+                        }
+                      ],
+                      alignItems: "center"
                     },
                     {
-                      type: "box",
-                      layout: "baseline",
-                      contents: [
-                        { type: "text", text: "สถานะ:", flex: 2, size: "sm", color: "#aaaaaa" },
-                        { type: "text", text: "รอรับเรื่อง", flex: 5, size: "sm", color: "#f39c12" }
-                      ]
+                      type: "text",
+                      text: transaction_id,
+                      size: "sm",
+                      color: "#718096",
+                      margin: "md"
+                    }
+                  ]
+                },
+                {
+                  type: "box",
+                  layout: "baseline",
+                  spacing: "sm",
+                  contents: [
+                    {
+                      type: "text",
+                      text: "ประเภท:",
+                      size: "sm",
+                      color: "#AAAAAA",
+                      flex: 2
                     },
                     {
-                      type: "box",
-                      layout: "baseline",
-                      contents: [
-                        { type: "text", text: "สถานที่:", flex: 2, size: "sm", color: "#aaaaaa" },
-                        { type: "text", text: fullIssue.building + " ชั้น " + (fullIssue.floor || "-") + " ห้อง " + (fullIssue.room || "-"), flex: 5, size: "sm", wrap: true, color: "#333333" }
-                      ]
+                      type: "text",
+                      text: fullIssue.title,
+                      size: "sm",
+                      color: "#333333",
+                      wrap: true,
+                      flex: 5
+                    }
+                  ]
+                },
+                {
+                  type: "box",
+                  layout: "baseline",
+                  spacing: "sm",
+                  contents: [
+                    {
+                      type: "text",
+                      text: "สถานที่:",
+                      size: "sm",
+                      color: "#AAAAAA",
+                      flex: 2
                     },
                     {
-                      type: "box",
-                      layout: "baseline",
-                      contents: [
-                        { type: "text", text: "ประเภท:", flex: 2, size: "sm", color: "#aaaaaa" },
-                        { type: "text", text: fullIssue.title, flex: 5, size: "sm", color: "#333333" }
-                      ]
+                      type: "text",
+                      text: `ตึก${fullIssue.building} ชั้น ${fullIssue.floor ?? "-"} ห้อง ${fullIssue.room ?? "-"}`,
+                      size: "sm",
+                      color: "#333333",
+                      wrap: true,
+                      flex: 5
+                    }
+                  ]
+                },
+                {
+                  type: "box",
+                  layout: "baseline",
+                  spacing: "sm",
+                  contents: [
+                    {
+                      type: "text",
+                      text: "วันที่แจ้ง:",
+                      size: "sm",
+                      color: "#AAAAAA",
+                      flex: 2
+                    },
+                    {
+                      type: "text",
+                      text: dateThai,
+                      size: "sm",
+                      color: "#333333",
+                      wrap: true,
+                      flex: 5
                     }
                   ]
                 }
@@ -158,18 +230,18 @@ const IssueReportController = {
                 {
                   type: "button",
                   style: "primary",
-                  color: "#1DB446",
                   action: {
                     type: "uri",
-                    label: "🔍 ดูสถานะปัญหา",
+                    label: "🔍 ดูไทม์ไลน์การทำงาน",
                     uri: `https://tse-fongdi.vercel.app/UserPage/IssueTimeline/${issue.id}`
-                  }
+                  },
+                  color: "#8C181C"
                 }
               ]
             }
           }
         };
-        
+                
       await pushLineMessage(userUid, lineMessage);
 }
 

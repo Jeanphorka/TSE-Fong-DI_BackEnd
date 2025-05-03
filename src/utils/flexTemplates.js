@@ -211,7 +211,28 @@ const formatDate = (iso) => {
   
     const beforeImage = fullIssue.status_updates.find(s => s.status === "รอรับเรื่อง" && s.images.length > 0)?.images[0];
     const afterImage = fullIssue.status_updates.filter(s => s.status === "เสร็จสิ้น" && s.images.length > 0).at(-1)?.images[0];
-    const stars = '⭐'.repeat(Math.floor(review || 0));
+    const getStarImages = (scoreRaw) => {
+      const score = Number(scoreRaw);
+      const roundedScore = Math.round(score * 2) / 2; // ได้เลข .0 หรือ .5 เท่านั้น
+      const full = Math.floor(roundedScore);
+      const isHalf = Math.abs(roundedScore - full - 0.5) < 0.01; // ทนต่อ float error
+      const half = isHalf ? 1 : 0;
+      const empty = 5 - full - half;
+      const stars = [];
+    
+      for (let i = 0; i < full; i++) {
+        stars.push("https://fongdi.s3.ap-southeast-2.amazonaws.com/uploads/favorite+(1).png");
+      }
+      if (half) {
+        stars.push("https://fongdi.s3.ap-southeast-2.amazonaws.com/uploads/favorite.png");
+      }
+      for (let i = 0; i < empty; i++) {
+        stars.push("https://fongdi.s3.ap-southeast-2.amazonaws.com/uploads/favorite-empty.png"); // อัปโหลดเพิ่มถ้ายังไม่มี
+      }
+    
+      return stars;
+    };
+    
   
     return {
       type: "flex",
@@ -373,14 +394,19 @@ const formatDate = (iso) => {
               ],
               offsetTop: "-5px"
             },
-            // {
-            //   type: "text",
-            //   text: stars,
-            //   size: "xl",
-            //   align: "center",
-            //   color: "#F6AD55",
-            //   // offsetTop: "-4px"
-            // },
+            {
+              type: "box",
+              layout: "horizontal",
+              spacing: "xs",
+              justifyContent: "center",
+              contents: getStarImages(review).map((url) => ({
+                type: "image",
+                url,
+                size: "30px",
+                align: "center",
+                
+              }))
+            },
             ...(comment
               ? [
                 {

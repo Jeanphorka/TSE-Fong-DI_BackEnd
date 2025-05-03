@@ -204,16 +204,15 @@ const formatDate = (iso) => {
       building = "-",
       floor = "-",
       room = "-",
-      created_at,
+      created_at = "-",
       review = 0,
-      comment = "",
-      
-      id
+      comment = "-",
     } = fullIssue;
   
     const beforeImage = fullIssue.status_updates.find(s => s.status === "รอรับเรื่อง" && s.images.length > 0)?.images[0];
     const afterImage = fullIssue.status_updates.filter(s => s.status === "เสร็จสิ้น" && s.images.length > 0).at(-1)?.images[0];
     const stars = '⭐'.repeat(Math.floor(review || 0));
+    const safeComment = comment?.replace(/"/g, '“').substring(0, 200) || "";
   
     return {
       type: "flex",
@@ -387,7 +386,7 @@ const formatDate = (iso) => {
               ? [
                 {
                   type: "text",
-                  text: `“${comment}”`,
+                  text: safeComment ,
                   wrap: true,
                   margin: "md",
                   color: "#333333",

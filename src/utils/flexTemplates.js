@@ -223,7 +223,7 @@ const formatDate = (iso) => {
         size: "mega",
         hero: {
           type: "image",
-          url: beforeImage || "https://your-default-image.com/before.jpg",
+          url: beforeImage,
           size: "full",
           aspectRatio: "20:13",
           aspectMode: "cover"
@@ -336,7 +336,7 @@ const formatDate = (iso) => {
               contents: [
                 {
                   type: "image",
-                  url: beforeImage || "https://your-default-image.com/before.jpg",
+                  url: beforeImage ,
                   size: "full",
                   aspectMode: "cover",
                   aspectRatio: "1:1",
@@ -344,7 +344,7 @@ const formatDate = (iso) => {
                 },
                 {
                   type: "image",
-                  url: afterImage || "https://your-default-image.com/after.jpg",
+                  url: afterImage ,
                   size: "full",
                   aspectMode: "cover",
                   aspectRatio: "1:1",

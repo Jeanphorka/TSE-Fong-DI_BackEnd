@@ -174,7 +174,7 @@ const formatDate = (iso) => {
                 style: "primary",
                 action: {
                   type: "uri",
-                  label: "ดูไทม์ไทม์การทำงาน",
+                  label: "ดูไทม์ไลน์การทำงาน",
                   uri: `https://tse-fongdi.vercel.app/UserPage/IssueTimeline/${fullIssue.id}`
                 },
                 color: "#8C181C"

@@ -15,13 +15,14 @@ const s3 = new S3Client({
 
 // ฟังก์ชันตรวจสอบไฟล์ (เฉพาะ `.jpg`, `.jpeg`, `.png`)
 const fileFilter = (req, file, cb) => {
-  const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
+  const allowedTypes = ["image/jpeg", "image/png", "image/jpg", "image/heic", "image/heif", "image/webp"];
   if (allowedTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error("Only .jpg, .jpeg, and .png files are allowed!"), false);
+    cb(new Error("Only .jpg, .jpeg, .png, .heif .webp and .heic files are allowed!"), false);
   }
 };
+
 
 // ตั้งค่าการอัปโหลดไฟล์ไปยัง S3
 const upload = multer({

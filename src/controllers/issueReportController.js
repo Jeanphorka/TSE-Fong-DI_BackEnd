@@ -1,4 +1,4 @@
-const { upload } = require("../middlewares/uploadMiddleware");
+const { upload, uploadToSupabase } = require("../middlewares/uploadMiddleware");
 const IssueReportModel = require("../models/issueReportModel");
 const IssueLogModel = require("../models/issueLogModel");
 const { notifyAgents } = require('../controllers/notifyController');
@@ -47,12 +47,16 @@ const IssueReportController = {
         }
         
         // รับ URL ของไฟล์ที่อัปโหลด
-        const imageUrls = req.files?.length > 0
-                ? req.files.map(file => ({
-                    file_url: file.location,
-                    file_extension: file.originalname.split(".").pop()
-                }))
-                : [];
+        let imageUrls = [];
+          if (req.files?.length > 0) {
+            for (const file of req.files) {
+              const url = await uploadToSupabase(file.buffer, file.originalname);
+              imageUrls.push({
+                file_url: url,
+                file_extension: file.originalname.split(".").pop()
+              });
+            }
+        }
 
         // บันทึกข้อมูลปัญหา
         const issue = await IssueReportModel.createIssueReport(reporter_id, problem_id, description || "", location_id);

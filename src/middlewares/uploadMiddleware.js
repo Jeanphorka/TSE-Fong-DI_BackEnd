@@ -1,6 +1,7 @@
 const multer = require('multer');
 const path = require('path');
 const supabase = require('../utils/supabaseClient');
+const sharp = require('sharp');
 
 const BUCKET_NAME = process.env.SUPABASE_BUCKET_NAME;
 const storage = multer.memoryStorage();
@@ -18,14 +19,20 @@ const upload = multer({
 async function uploadToSupabase(fileBuffer, originalname) {
   const fileExt = path.extname(originalname);
   const fileName = `uploads/${Date.now()}-${Math.round(Math.random() * 1e9)}${fileExt}`;
+
+  // Resize รูปภาพ 
+  const resizedBuffer = await sharp(fileBuffer)
+    .resize({ width: 1024, withoutEnlargement: true })
+    .webp({ quality: 80 })
+    .toBuffer();
+
   const { data, error } = await supabase.storage
-    .from(BUCKET_NAME) // เปลี่ยนเป็นชื่อ bucket ของคุณ
-    .upload(fileName, fileBuffer, {
-      contentType: 'image/*'
+    .from(BUCKET_NAME)
+    .upload(fileName.replace(fileExt, '.webp'), resizedBuffer, {
+      contentType: 'image/webp'
     });
   if (error) throw error;
-  // สร้าง public URL
-  const { data: publicUrl } = supabase.storage.from('your-bucket-name').getPublicUrl(fileName);
+  const { data: publicUrl } = supabase.storage.from(BUCKET_NAME).getPublicUrl(fileName.replace(fileExt, '.webp'));
   return publicUrl.publicUrl;
 }
 

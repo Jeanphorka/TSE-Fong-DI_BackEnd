@@ -9,7 +9,7 @@ const notifyAgents = async (departmentId, issue , mode = "new") => {
       await sendIssueNotification(emails, issue, mode);
     }
   } catch (err) {
-    console.error('❌ notifyAgents error:', err.message);
+    console.error('❌ notifyAgents error:' , err.message);
   }
 };
 

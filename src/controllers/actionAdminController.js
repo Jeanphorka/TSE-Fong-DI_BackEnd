@@ -1,4 +1,4 @@
-const { upload } = require("../middlewares/uploadMiddleware");
+const { upload, uploadToSupabase } = require("../middlewares/uploadMiddleware");
 const actionAdminModel = require("../models/actionAdminModel");
 const IssueLogModel = require("../models/issueLogModel");
 const IssueReportModel = require("../models/issueReportModel");

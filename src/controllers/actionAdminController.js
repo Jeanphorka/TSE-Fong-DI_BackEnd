@@ -8,7 +8,6 @@ const { pushLineMessage } = require('../utils/lineNotify');
 const { generateTimelineFlex } = require("../utils/flexTemplates");
 
 
-
 const ActionAdminController = {
   updateIssueStatus: [
     upload.array("images", 1),  // ใช้ Middleware สำหรับอัปโหลดรูปภาพ

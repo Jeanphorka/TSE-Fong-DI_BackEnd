@@ -1,4 +1,4 @@
-const { upload } = require("../middlewares/uploadMiddleware");
+const { upload, uploadToSupabase } = require("../middlewares/uploadMiddleware");
 const actionAdminModel = require("../models/actionAdminModel");
 const IssueLogModel = require("../models/issueLogModel");
 const IssueReportModel = require("../models/issueReportModel");
@@ -6,7 +6,6 @@ const {notifyAgents , notifyAdmins} = require('../controllers/notifyController')
 const { getUidByIssueId } = require('../models/notifyModel');
 const { pushLineMessage } = require('../utils/lineNotify');
 const { generateTimelineFlex } = require("../utils/flexTemplates");
-
 
 
 const ActionAdminController = {

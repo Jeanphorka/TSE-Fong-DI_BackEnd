@@ -84,12 +84,16 @@ const ActionAdminController = {
         }
 
         // รับ URL ของไฟล์ที่อัปโหลด
-        const imageUrls = req.files?.length > 0
-          ? req.files.map(file => ({
-              file_url: file.location,  // URL ของไฟล์
-              file_extension: file.originalname.split(".").pop()
-          }))
-          : [];
+        let imageUrls = [];
+                  if (req.files?.length > 0) {
+                    for (const file of req.files) {
+                      const url = await uploadToSupabase(file.buffer, file.originalname);
+                      imageUrls.push({
+                        file_url: url,
+                        file_extension: file.originalname.split(".").pop()
+                      });
+                    }
+                }
 
         const has_images = imageUrls.length > 0;
 
